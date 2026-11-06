@@ -156,6 +156,8 @@ circle.gm.target{fill:none}
   input[type=text],input[type=search]{font-size:16px}
 }
 
+.backlink{color:var(--muted);text-decoration:none;font-size:13px;padding:3px 8px;margin-left:-8px;border-radius:8px;white-space:nowrap}
+.backlink:hover{background:var(--chip);color:var(--ink)}
 .famslot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .po{position:fixed;inset:0;z-index:40;background:rgba(10,14,22,.55);display:grid;place-items:center;padding:14px;overflow:auto}
 .po[hidden]{display:none}
@@ -179,6 +181,7 @@ circle.gm.target{fill:none}
 <body>
 <div class="app">
   <header>
+    <a class="backlink" href="../" title="Dashboards">‹ dashboards</a>
     <h1 data-i="title"></h1>
     <span class="sub"><span id="stat"></span> · <span data-i="subTail"></span></span>
     <span class="famslot" id="famSlot"></span>

@@ -101,6 +101,28 @@ button{font:inherit;color:inherit}
 .sheet.sol .bl{border-color:#1f4fd1}
 .foot{margin-top:18px;font-size:12px;color:var(--muted)}
 
+.field{display:block;font-size:13px;color:var(--muted);margin-bottom:12px}
+.field input,.row input[type=text]{display:block;width:100%;margin-top:4px;font:600 16px var(--txt);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.row input[type=text]{margin-top:0;flex:1;min-width:140px;width:auto}
+.cerr{min-height:20px;font-size:14px;color:var(--bad);margin:-4px 0 8px}
+.profiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:6px}
+.prof{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:12px;cursor:pointer;font:800 18px var(--num);text-align:left;width:100%}
+.prof:hover{border-color:var(--blue)}
+.prof .nm2{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.prof .x{color:var(--bad);font:700 13px var(--txt)}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font:800 17px var(--num);flex:none}
+.who-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 12px 3px 4px;cursor:pointer;font:700 14px var(--num)}
+.who-chip .av{width:28px;height:28px;font-size:14px}
+.sync{font-size:12px;color:var(--muted);margin:-6px 0 12px;min-height:16px}
+.sync.err{color:var(--bad)}
+.foot button{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0;font-size:12px;margin-right:12px}
+.nm b{color:#1b2a41;font-weight:700;margin-left:4px;border-bottom:1px solid #99a1b3;padding:0 10px}
+.hist{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.hist li{display:flex;align-items:center;gap:10px;border-bottom:1px dashed var(--line);padding:6px 2px;font-size:14px}
+.hist .t{flex:1}
+.hist .t small{color:var(--muted)}
+.hist input{width:62px;font:700 15px var(--num);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:5px 8px;text-align:center}
+.hist .of{color:var(--muted);font-size:13px}
 @media print{
   @page{size:A4;margin:12mm}
   html{padding:0}
@@ -127,9 +149,47 @@ button{font:inherit;color:inherit}
   <header class="noprint">
     <a class="back" href="../">‹ dashboards</a>
     <h1>Hojas de mates</h1>
+    <button class="who-chip" id="whoChip" hidden></button>
     <button class="theme" id="themeBtn" aria-label="Cambiar tema" title="Tema">◐</button>
   </header>
 
+  <div class="sync noprint" id="sync"></div>
+
+  <!-- CONECTAR -->
+  <section id="v-connect" class="noprint" hidden>
+    <div class="card">
+      <h2>Conecta tu repositorio privado</h2>
+      <p class="hint" style="margin:0 0 14px">Los ajustes y el historial de cada niño se guardan en tu repositorio privado, nunca en esta web pública. El token se queda solo en este navegador (y lo comparte con tablas).</p>
+      <label class="field">Repositorio<input id="cRepo" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="rfleiro/FamilyOps"></label>
+      <label class="field">Token de GitHub<input id="cToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>
+      <div class="cerr" id="cErr" role="status"></div>
+      <div class="actions" style="margin-bottom:0">
+        <button class="btn primary" id="cGo">Conectar</button>
+        <button class="btn ghost" id="cGuest">Usar sin guardar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIÉN -->
+  <section id="v-who" class="noprint" hidden>
+    <div class="card">
+      <h2>¿Para quién es la hoja?</h2>
+      <div class="hint" id="whoMsg" style="margin:0 0 8px"></div>
+      <div class="profiles" id="profiles"></div>
+      <div class="row" id="addRow" hidden>
+        <input id="newName" type="text" maxlength="24" placeholder="Nombre" autocomplete="off">
+        <button class="btn primary" id="addOk">Añadir</button>
+        <button class="btn ghost" id="addCancel">Cancelar</button>
+      </div>
+      <div class="actions" style="margin:12px 0 0">
+        <button class="btn" id="addBtn">+ Añadir niño/a</button>
+        <button class="btn ghost" id="editBtn">Quitar perfiles</button>
+      </div>
+    </div>
+    <div class="foot"><button id="guestBtn">Usar sin guardar</button><button id="discBtn">Desconectar este navegador</button></div>
+  </section>
+
+  <div id="v-main" hidden>
   <div class="card noprint">
     <h2>Operaciones</h2>
     <div class="chips" id="ops">
@@ -170,6 +230,13 @@ button{font:inherit;color:inherit}
 
   <div class="sheet" id="sheet"></div>
   <p class="foot noprint">Las divisiones son siempre exactas. El PDF es una sola hoja A4 y se genera con los mismos ejercicios que ves en pantalla.</p>
+
+  <div class="card noprint" id="histCard" hidden>
+    <h2>Hojas recientes</h2>
+    <p class="hint" style="margin:0 0 8px">Se apuntan al descargar o imprimir. Cuando la corrijas, anota los aciertos.</p>
+    <ul class="hist" id="hist"></ul>
+  </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -188,10 +255,124 @@ var LVTXT=[
  'Sumas y restas de 4 cifras \u00B7 2 cifras \u00D7 2 cifras \u00B7 divisor de 2 cifras, cociente de 2 cifras'
 ];
 
-/* ─── preferencias (nada sensible: solo ajustes de la hoja) ─── */
-var P={ops:['+','-'],level:2,n:20,fmt:'line',carry:'any'};
-try{var sv=JSON.parse(localStorage.getItem('mates:prefs')||'null');if(sv){for(var k in P)if(sv[k]!==undefined)P[k]=sv[k];}}catch(e){}
-function savePrefs(){try{localStorage.setItem('mates:prefs',JSON.stringify(P))}catch(e){}}
+/* ─── almacenamiento: perfiles en repo privado + invitado local (mismo esquema que tablas) ─── */
+var LS='mates:v1',LSC='tablas:conn',LSL='mates:last',LSK='mates:cache:';
+var COLORS=['#d6403b','#1f4fd1','#1f8a4c','#c27a0e','#7a4fd1','#0e8fa8'];
+function defPrefs(){return {ops:['+','-'],level:2,n:20,fmt:'line',carry:'any'}}
+function defaults(){return {prefs:defPrefs(),sheets:[]}}
+function rj(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function wj(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function normalize(x){
+  var d=defaults();
+  if(x&&typeof x==='object'){
+    var q=x.prefs||{};
+    if(Array.isArray(q.ops)){var ops=q.ops.filter(function(o){return '+-*/'.indexOf(o)>=0&&o.length===1});if(ops.length)d.prefs.ops=ops}
+    if([1,2,3,4].indexOf(q.level)>=0)d.prefs.level=q.level;
+    if([12,20,30].indexOf(q.n)>=0)d.prefs.n=q.n;
+    if(q.fmt==='line'||q.fmt==='col')d.prefs.fmt=q.fmt;
+    if(q.carry==='any'||q.carry==='no'||q.carry==='yes')d.prefs.carry=q.carry;
+    d.sheets=Array.isArray(x.sheets)?x.sheets:[];
+  }
+  return d;
+}
+function mergeData(remote,local){
+  var o=normalize(remote),l=normalize(local),m={};
+  o.sheets.concat(l.sheets).forEach(function(sh){var a=m[sh.id];if(!a||(sh.su||0)>=(a.su||0))m[sh.id]=sh});
+  o.sheets=Object.keys(m).map(function(k){return m[k]}).sort(function(a,b){return a.ts-b.ts}).slice(-300);
+  o.prefs=l.prefs;
+  return o;
+}
+var P=defPrefs(),store=defaults();
+var conn=rj(LSC),profiles=[],active=null,remoteSha=null;
+var dirty=false,ver=0,saving=false,flushT=null,editMode=false;
+var curSheet={id:'',logged:false};
+
+function h(tag,attrs,kids){var e=document.createElement(tag);for(var k in (attrs||{})){if(k==='text')e.textContent=attrs[k];else e.setAttribute(k,attrs[k]);}(kids||[]).forEach(function(c){e.appendChild(c)});return e}
+function b64e(t){return btoa(unescape(encodeURIComponent(t)))}
+function b64d(t){return decodeURIComponent(escape(atob(t.replace(/\n/g,''))))}
+function api(method,path,body){
+  var opt={method:method,cache:'no-store',headers:{'Authorization':'Bearer '+conn.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}};
+  if(body){opt.body=JSON.stringify(body);if(opt.body.length<60000)opt.keepalive=true}
+  return fetch('https://api.github.com/repos/'+conn.repo+'/contents/'+path,opt).then(function(r){
+    return r.text().then(function(tx){var j={};try{j=JSON.parse(tx)}catch(e){}return {status:r.status,json:j}});
+  });
+}
+function getJSON(path){
+  return api('GET',path).then(function(r){
+    if(r.status===404)return null;
+    if(r.status!==200)throw new Error('GitHub '+r.status);
+    return {data:JSON.parse(b64d(r.json.content)),sha:r.json.sha};
+  });
+}
+function putJSON(path,obj,sha,msg){
+  var b={message:msg,content:b64e(JSON.stringify(obj,null,1))};if(sha)b.sha=sha;
+  return api('PUT',path,b);
+}
+function pfile(id){return 'mates/p-'+id+'.json'}
+function slug(n){
+  var t=String(n).toLowerCase();
+  try{t=t.normalize('NFD').replace(/[\u0300-\u036f]/g,'')}catch(e){}
+  t=t.replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return t||'p';
+}
+/* la primera vez, la lista parte de los perfiles de tablas (mismos niños, mismos ids) */
+function baseProfiles(){
+  return getJSON('mates/profiles.json').then(function(r){
+    if(r)return r;
+    return getJSON('tablas/profiles.json').then(function(t){return {data:{profiles:(t&&t.data.profiles)||[]},sha:null}});
+  });
+}
+function loadProfiles(){return baseProfiles().then(function(r){profiles=r.data.profiles||[];return profiles})}
+function updateProfiles(mut,msg,n){
+  n=n||0;
+  return baseProfiles().then(function(r){
+    var list=mut(r.data.profiles?r.data.profiles.slice():[]);
+    return putJSON('mates/profiles.json',{profiles:list},r.sha,msg).then(function(w){
+      if(w.status===200||w.status===201){profiles=list;return list}
+      if((w.status===409||w.status===422)&&n<2)return updateProfiles(mut,msg,n+1);
+      throw new Error('GitHub '+w.status);
+    });
+  });
+}
+function setSync(st){
+  var el=$('#sync');if(!el)return;
+  var msgs={ok:'\u2601 guardado en tu repositorio privado',saving:'\u2601 guardando\u2026',dirty:'\u2601 cambios pendientes de guardar',error:'\u26A0 no se pudo guardar; se reintentar\u00E1',guest:'Solo en este navegador (sin perfil)',off:''};
+  el.textContent=msgs[st]||'';el.classList.toggle('err',st==='error');
+}
+function save(){
+  if(active==='guest'||!active){wj(LS,store);return}
+  ver++;dirty=true;
+  wj(LSK+active.id,{data:store,dirty:true});
+  setSync('dirty');
+  if(!flushT)flushT=setTimeout(flush,8000);
+}
+function flush(){
+  clearTimeout(flushT);flushT=null;
+  if(!active||active==='guest'||!conn||!dirty||saving)return Promise.resolve();
+  saving=true;setSync('saving');
+  var me=active,path=pfile(me.id);
+  function attempt(n){
+    var v=ver;
+    return putJSON(path,store,remoteSha,'mates: '+me.name).then(function(r){
+      if(r.status===200||r.status===201){
+        remoteSha=r.json.content.sha;
+        if(ver===v){dirty=false;wj(LSK+me.id,{data:store,dirty:false});setSync('ok')}
+        else{setSync('dirty');flushT=setTimeout(flush,3000)}
+        return;
+      }
+      if((r.status===409||r.status===422)&&n<2){
+        return getJSON(path).then(function(rem){
+          if(rem){store=mergeData(rem.data,store);P=store.prefs;remoteSha=rem.sha}else remoteSha=null;
+          ver++;return attempt(n+1);
+        });
+      }
+      throw new Error('HTTP '+r.status);
+    });
+  }
+  return attempt(0).then(function(){saving=false},function(){saving=false;setSync('error');if(!flushT)flushT=setTimeout(flush,30000)});
+}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')flush()});
+window.addEventListener('pagehide',function(){flush()});
 
 var items=[];
 
@@ -245,6 +426,7 @@ function make(){
     out.push(it);
   });
   items=out;
+  curSheet={id:Math.random().toString(36).slice(2,10),logged:false};
 }
 
 /* ─── pantalla ─── */
@@ -252,7 +434,7 @@ function opsLabel(){return P.ops.map(function(o){return OPNAME[o]}).join(', ')}
 function render(){
   var cols=P.fmt==='line'?(P.level===4?'g-line2':'g-line'):(P.n>20?'g-col5':'g-col4');
   var h='<div class="sh"><b>Hoja de mates</b><span>'+LVNAME[P.level]+' \u00B7 '+opsLabel()+'</span></div>'
-    +'<div class="nm"><span>Nombre:<i></i></span><span>Fecha:<i class="s"></i></span><span>Aciertos:<i class="s"></i> / '+items.length+'</span></div>'
+    +'<div class="nm"><span>Nombre:'+(active&&active!=='guest'?'<b>'+active.name.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</b>':'<i></i>')+'</span><span>Fecha:<i class="s"></i></span><span>Aciertos:<i class="s"></i> / '+items.length+'</span></div>'
     +'<div class="grid '+cols+'">';
   items.forEach(function(it,i){
     h+='<div class="cell"><span class="n">'+(i+1)+')</span>';
@@ -280,7 +462,7 @@ function syncUI(){
   $('#lvHint').textContent=LVTXT[P.level];
   $('#carryRow').hidden=!(P.ops.indexOf('+')>=0||P.ops.indexOf('-')>=0);
 }
-function refresh(){savePrefs();syncUI();make();render()}
+function refresh(){save();syncUI();make();render()}
 
 document.querySelectorAll('#ops .chip').forEach(function(b){
   b.onclick=function(){
@@ -300,7 +482,7 @@ document.querySelectorAll('[data-seg]').forEach(function(sg){
 });
 $('#newBtn').onclick=function(){make();render()};
 $('#solChk').onchange=function(){$('#sheet').classList.toggle('sol',this.checked)};
-$('#printBtn').onclick=function(){window.print()};
+$('#printBtn').onclick=function(){logSheet();window.print()};
 
 /* ─── PDF (1 página A4) ─── */
 function drawOp(doc,op,x,y,ink){
@@ -324,6 +506,7 @@ function pdf(withSol){
     doc.setFontSize(10);doc.setTextColor(105,115,138);doc.setDrawColor(GRY[0],GRY[1],GRY[2]);doc.setLineWidth(.25);
     var yl=M+19;
     doc.text('Nombre:',M,yl);doc.line(M+16,yl+1,M+88,yl+1);
+    if(active&&active!=='guest'){ink();doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(active.name,M+18,yl);doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(105,115,138)}
     doc.text('Fecha:',M+96,yl);doc.line(M+109,yl+1,M+138,yl+1);
     doc.text('Aciertos:',M+146,yl);doc.line(M+161,yl+1,M+171,yl+1);doc.text('/ '+items.length,M+173,yl);
   }
@@ -379,8 +562,8 @@ function pdf(withSol){
   var name='mates-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-nivel'+P.level+(withSol?'-soluciones':'')+'.pdf';
   doc.save(name);
 }
-$('#pdfBtn').onclick=function(){pdf(false)};
-$('#pdfSolBtn').onclick=function(){pdf(true)};
+$('#pdfBtn').onclick=function(){logSheet();pdf(false)};
+$('#pdfSolBtn').onclick=function(){logSheet();pdf(true)};
 
 /* ─── tema (comparte la preferencia del hub) ─── */
 var CYCLE=['auto','light','dark'];
@@ -396,7 +579,169 @@ $('#themeBtn').onclick=function(){
 };
 (function(){var t='auto';try{t=localStorage.getItem('dash:theme')||'auto'}catch(e){}applyTheme(t)})();
 
-refresh();
+/* ─── historial de hojas ─── */
+var MESES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+function logSheet(){
+  if(!active||curSheet.logged)return;
+  curSheet.logged=true;
+  store.sheets.push({id:curSheet.id,ts:Date.now(),l:P.level,o:P.ops.join(''),n:items.length,f:P.fmt,s:null});
+  if(store.sheets.length>300)store.sheets=store.sheets.slice(-300);
+  save();renderHist();
+}
+function renderHist(){
+  var ul=$('#hist');ul.innerHTML='';
+  var list=store.sheets.slice(-8).reverse();
+  $('#histCard').hidden=!active||!list.length;
+  list.forEach(function(sh){
+    var d=new Date(sh.ts);
+    var li=h('li');
+    var t=h('span',{'class':'t'});
+    t.appendChild(document.createTextNode(d.getDate()+' '+MESES[d.getMonth()]+' \u00B7 '+LVNAME[sh.l]+' \u00B7 '));
+    t.appendChild(h('small',{text:sh.o.split('').map(function(o){return SYM[o]}).join(' ')+' \u00B7 '+sh.n+' ej.'}));
+    li.appendChild(t);
+    var inp=h('input',{type:'number',min:'0',max:String(sh.n),inputmode:'numeric',placeholder:'\u2014','aria-label':'Aciertos'});
+    if(sh.s!=null)inp.value=sh.s;
+    inp.onchange=function(){
+      var v=inp.value===''?null:Math.max(0,Math.min(sh.n,parseInt(inp.value,10)||0));
+      sh.s=v;sh.su=Date.now();
+      if(v!=null)inp.value=v;
+      save();
+    };
+    li.appendChild(inp);
+    li.appendChild(h('span',{'class':'of',text:'/ '+sh.n}));
+    ul.appendChild(li);
+  });
+}
+
+/* ─── navegaci\u00F3n y perfiles ─── */
+function avatar(name,color){var a=h('span',{'class':'av',text:(name||'?').trim().charAt(0).toUpperCase()});a.style.background=color;return a}
+function show(v){
+  ['connect','who','main'].forEach(function(n){$('#v-'+n).hidden=(n!==v)});
+  var chip=$('#whoChip'),showChip=active&&v==='main';
+  chip.hidden=!showChip;
+  if(showChip){
+    chip.innerHTML='';
+    chip.appendChild(avatar(active==='guest'?'?':active.name,active==='guest'?'#69738a':active.color));
+    chip.appendChild(document.createTextNode(active==='guest'?'Sin perfil':active.name));
+  }
+  if(v!=='main')setSync('off');
+  window.scrollTo(0,0);
+}
+function startMain(){syncUI();make();render();renderHist();show('main')}
+function connFail(msg){conn=rj(LSC);$('#cErr').textContent=msg}
+$('#cGo').onclick=function(){
+  var repo=$('#cRepo').value.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/$/,'');
+  var tok=$('#cToken').value.trim();
+  if(!/^[\w.-]+\/[\w.-]+$/.test(repo)||!tok){$('#cErr').textContent='Escribe el repositorio (usuario/nombre) y el token.';return}
+  $('#cErr').textContent='Comprobando\u2026';
+  fetch('https://api.github.com/repos/'+repo,{cache:'no-store',headers:{'Authorization':'Bearer '+tok,'Accept':'application/vnd.github+json'}})
+    .then(function(r){return r.json().then(function(j){return {s:r.status,j:j}})})
+    .then(function(x){
+      if(x.s===401)return connFail('El token no es v\u00E1lido.');
+      if(x.s===404)return connFail('No encuentro ese repositorio con ese token.');
+      if(x.s!==200)return connFail('GitHub respondi\u00F3 '+x.s+'.');
+      if(x.j.private!==true)return connFail('Ese repositorio es p\u00FAblico. Usa uno privado: aqu\u00ED se guardan datos de los ni\u00F1os.');
+      if(x.j.permissions&&x.j.permissions.push===false)return connFail('El token no puede escribir (necesita Contents: lectura y escritura).');
+      conn={repo:repo,token:tok};wj(LSC,conn);$('#cToken').value='';$('#cErr').textContent='';
+      boot();
+    })
+    .catch(function(){connFail('No se pudo conectar. \u00BFHay internet?')});
+};
+function guest(){
+  active='guest';
+  var old=rj('mates:prefs');
+  store=normalize(rj(LS)||(old?{prefs:old}:null));P=store.prefs;
+  setSync('guest');startMain();
+}
+$('#cGuest').onclick=guest;
+$('#guestBtn').onclick=guest;
+$('#discBtn').onclick=function(){
+  if(!confirm('\u00BFDesconectar este navegador? Los datos siguen guardados en tu repositorio. Tambi\u00E9n se desconecta tablas.'))return;
+  try{
+    Object.keys(localStorage).forEach(function(k){if(k.indexOf(LSK)===0)localStorage.removeItem(k)});
+    localStorage.removeItem(LSC);localStorage.removeItem(LSL);
+  }catch(e){}
+  conn=null;active=null;profiles=[];dirty=false;show('connect');
+};
+function renderWho(){
+  var box=$('#profiles');box.innerHTML='';
+  profiles.forEach(function(p){
+    var b=h('button',{'class':'prof',type:'button'});
+    b.appendChild(avatar(p.name,p.color));
+    b.appendChild(h('span',{'class':'nm2',text:p.name}));
+    if(editMode)b.appendChild(h('span',{'class':'x',text:'Quitar'}));
+    b.onclick=function(){editMode?removeProfile(p):selectProfile(p)};
+    box.appendChild(b);
+  });
+  $('#whoMsg').textContent=profiles.length?'':'A\u00FAn no hay nadie. A\u00F1ade a la primera persona.';
+  $('#editBtn').hidden=!profiles.length;
+  $('#editBtn').textContent=editMode?'Listo':'Quitar perfiles';
+}
+function whoError(msg){$('#whoMsg').textContent=msg;$('#profiles').innerHTML=''}
+$('#addBtn').onclick=function(){$('#addRow').hidden=false;$('#newName').value='';$('#newName').focus()};
+$('#addCancel').onclick=function(){$('#addRow').hidden=true};
+function doAdd(){
+  var name=$('#newName').value.trim();if(!name)return;
+  var p={id:slug(name)+'-'+Math.random().toString(36).slice(2,6),name:name,color:COLORS[profiles.length%COLORS.length]};
+  $('#whoMsg').textContent='Guardando\u2026';
+  updateProfiles(function(l){l.push(p);return l},'mates: a\u00F1adir perfil').then(function(){
+    $('#addRow').hidden=true;
+    selectProfile(p);
+  }).catch(function(){$('#whoMsg').textContent='No se pudo guardar el perfil. Revisa la conexi\u00F3n.'});
+}
+$('#addOk').onclick=doAdd;
+$('#newName').addEventListener('keydown',function(e){if(e.key==='Enter')doAdd()});
+$('#editBtn').onclick=function(){editMode=!editMode;renderWho()};
+function removeProfile(p){
+  if(!confirm('\u00BFQuitar el perfil de '+p.name+' de las hojas de mates y todo su historial? (Su progreso en tablas no se toca.)'))return;
+  $('#whoMsg').textContent='Quitando\u2026';
+  updateProfiles(function(l){return l.filter(function(x){return x.id!==p.id})},'mates: quitar perfil')
+    .then(function(){return getJSON(pfile(p.id))})
+    .then(function(r){if(r)return api('DELETE',pfile(p.id),{message:'mates: borrar '+p.name,sha:r.sha})})
+    .then(function(){try{localStorage.removeItem(LSK+p.id);if(localStorage.getItem(LSL)===p.id)localStorage.removeItem(LSL)}catch(e){}editMode=false;renderWho()})
+    .catch(function(){$('#whoMsg').textContent='No se pudo quitar. Revisa la conexi\u00F3n.'});
+}
+function selectProfile(p){
+  show('who');$('#whoMsg').textContent='Cargando\u2026';$('#profiles').innerHTML='';
+  var cache=rj(LSK+p.id);
+  getJSON(pfile(p.id)).then(function(r){
+    var st=r?normalize(r.data):null;remoteSha=r?r.sha:null;dirty=false;
+    if(cache&&cache.dirty&&cache.data){st=st?mergeData(st,cache.data):normalize(cache.data);dirty=true}
+    store=st||defaults();
+    begin(p);
+  }).catch(function(){
+    if(cache&&cache.data){store=normalize(cache.data);remoteSha=null;dirty=!!cache.dirty;begin(p);setSync('error')}
+    else{whoError('No se pudo cargar el perfil. Revisa la conexi\u00F3n.');setTimeout(function(){renderWho()},2500)}
+  });
+}
+function begin(p){
+  active=p;ver++;P=store.prefs;
+  try{localStorage.setItem(LSL,p.id)}catch(e){}
+  if(dirty){wj(LSK+p.id,{data:store,dirty:true});clearTimeout(flushT);flushT=setTimeout(flush,1500)}
+  startMain();
+  setSync(dirty?'dirty':'ok');
+}
+$('#whoChip').onclick=function(){
+  flush().then(function(){
+    active=null;editMode=false;
+    if(!conn){show('connect');return}
+    show('who');renderWho();
+  });
+};
+function boot(){
+  if(!conn){show('connect');return}
+  show('who');$('#whoMsg').textContent='Cargando\u2026';$('#profiles').innerHTML='';
+  loadProfiles().then(function(){
+    var last=null;try{last=localStorage.getItem(LSL)}catch(e){}
+    var p=profiles.filter(function(x){return x.id===last})[0];
+    if(p)selectProfile(p);else renderWho();
+  }).catch(function(){
+    $('#whoMsg').textContent='No se pudo leer tu repositorio. Revisa la conexi\u00F3n o el token.';
+    $('#profiles').innerHTML='';
+    var rb=h('button',{'class':'btn',type:'button',text:'Reintentar'});rb.onclick=boot;$('#profiles').appendChild(rb);
+  });
+}
+boot();
 })();
 </script>
 </body>

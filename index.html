@@ -45,7 +45,9 @@ function toggleTheme(){
 
 // ─── registry ─────────────────────────────────────────────────────────────────
 // To add a dashboard: create <id>/index.html, then add a row here.
-const DASHBOARDS = [];
+const DASHBOARDS = [
+  { id:"atlas", name:"atlas", desc:"World atlas \u00b7 study map, capitals and quiz", path:"atlas/", icon:"\u25CE", color:"#2563EB", live:true }
+];
 
 document.getElementById("hub").innerHTML =
   "<h1>family</h1><div class='sub'>"

@@ -3,39 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#fbfaf4" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#121a26" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F7F6F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="reloj">
 <meta name="robots" content="noindex, nofollow">
 <title>Aprende la hora</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23fbfaf4'/><circle cx='50' cy='50' r='30' fill='none' stroke='%231f4fd1' stroke-width='8'/><path d='M50 30v22l14 8' stroke='%23d6403b' stroke-width='8' stroke-linecap='round' fill='none'/></svg>">
 <script>(function(){try{var t=localStorage.getItem('dash:theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);}catch(e){}})()</script>
-<style>
-:root{
-  --paper:#fbfaf4; --grid:rgba(60,110,190,.14); --ink:#1b2a41; --muted:#69738a;
-  --blue:#1f4fd1; --blue-soft:rgba(31,79,209,.10); --red:#d6403b; --ok:#1f8a4c; --bad:#c9302c;
-  --card:#ffffff; --line:#d9d6c8; --chip:#efecdf; --chip-on:#1b2a41; --chip-on-ink:#fbfaf4; --btn-ink:#ffffff;
-  --lcd-bg:#1b2a41; --lcd-ink:#f5b301;
-  --shadow:0 1px 0 rgba(0,0,0,.04),0 6px 18px -10px rgba(27,42,65,.35);
-  --num:ui-rounded,"SF Pro Rounded","Avenir Next Rounded","Nunito","Trebuchet MS",system-ui,sans-serif;
-  --txt:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --hour:var(--red); --minute:var(--blue); --face:var(--card); --rim:var(--ink); --tick:var(--ink);
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>:root{
+  --paper:#F7F6F3;--card:#FFFFFF;--chip:#F0EEE9;--line:#E2DED6;--line-s:#C8C3BA;
+  --ink:#1A1916;--muted:#6B6760;--faint:#9B9690;
+  --blue:#2563EB;--blue-soft:#EFF4FF;--blue-line:#BFCFFF;
+  --red:#DC2626;--ok:#16A34A;--bad:#DC2626;--warn:#D97706;
+  --chip-on:#1A1916;--chip-on-ink:#F7F6F3;--on-accent:#FFFFFF;--btn-ink:#FFFFFF;--shadow:none;
+  --r:10px;--rs:6px;--w:760px;
+  --txt:"Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --num:"Barlow Condensed","Arial Narrow",-apple-system,system-ui,sans-serif;
+  --gold:#D97706;--lcd-bg:var(--chip);--lcd-ink:var(--ink);--hour:var(--red);--minute:var(--blue);--face:var(--card);--rim:var(--ink);--tick:var(--ink);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#121a26; --grid:rgba(140,180,255,.09); --ink:#e8edf6; --muted:#97a2b8;
-    --blue:#8fb0ff; --blue-soft:rgba(143,176,255,.14); --red:#ff7a72; --ok:#5fd08a; --bad:#ff8a84;
-    --card:#1a2434; --line:#2d3950; --chip:#223049; --chip-on:#e8edf6; --chip-on-ink:#121a26; --btn-ink:#0d1626;
-    --lcd-bg:#0b111a; --lcd-ink:#f5b301; --shadow:0 6px 18px -10px rgba(0,0,0,.7);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#121a26; --grid:rgba(140,180,255,.09); --ink:#e8edf6; --muted:#97a2b8;
-  --blue:#8fb0ff; --blue-soft:rgba(143,176,255,.14); --red:#ff7a72; --ok:#5fd08a; --bad:#ff8a84;
-  --card:#1a2434; --line:#2d3950; --chip:#223049; --chip-on:#e8edf6; --chip-on-ink:#121a26; --btn-ink:#0d1626;
-  --lcd-bg:#0b111a; --lcd-ink:#f5b301; --shadow:0 6px 18px -10px rgba(0,0,0,.7);
-}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#141412;--card:#1E1D1A;--chip:#252320;--line:#2E2C28;--line-s:#3E3B36;--ink:#F0EDE8;--muted:#A09C94;--faint:#6B6760;--blue:#4F83F7;--blue-soft:#0F1E3D;--blue-line:#1E3A7A;--red:#F87171;--ok:#4ADE80;--bad:#F87171;--warn:#FCD34D;--chip-on:#F0EDE8;--chip-on-ink:#141412;--on-accent:#0B1220;--btn-ink:#0B1220;--gold:#FCD34D;}}
+:root[data-theme="dark"]{--paper:#141412;--card:#1E1D1A;--chip:#252320;--line:#2E2C28;--line-s:#3E3B36;--ink:#F0EDE8;--muted:#A09C94;--faint:#6B6760;--blue:#4F83F7;--blue-soft:#0F1E3D;--blue-line:#1E3A7A;--red:#F87171;--ok:#4ADE80;--bad:#F87171;--warn:#FCD34D;--chip-on:#F0EDE8;--chip-on-ink:#141412;--on-accent:#0B1220;--btn-ink:#0B1220;--gold:#FCD34D;}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -52,7 +43,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .back{color:var(--muted);text-decoration:none;font-size:14px;padding:4px 8px;margin-left:-8px;border-radius:8px}
 .back:hover{background:var(--chip);color:var(--ink)}
-h1{font:800 clamp(22px,5vw,30px)/1.1 var(--num);letter-spacing:-.01em;margin:0;flex:1 1 auto}
+h1{font:700 clamp(22px,5vw,30px)/1.1 var(--num);letter-spacing:-.01em;margin:0;flex:1 1 auto}
 h2{font:700 16px/1.2 var(--num);margin:0 0 10px}
 .theme{border:1px solid var(--line);background:var(--card);color:var(--ink);width:36px;height:36px;border-radius:10px;display:grid;place-items:center}
 .pill{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 11px;font:600 13px var(--txt);display:inline-flex;gap:5px;align-items:center}
@@ -93,7 +84,7 @@ body.help .mlabel{display:inline}
 .progress{height:10px;background:var(--chip);border:1px solid var(--line);border-radius:99px;overflow:hidden}
 .progress>i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.opt{font:800 1.6rem var(--num);padding:12px 8px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-variant-numeric:tabular-nums}
+.opt{font:700 1.6rem var(--num);padding:12px 8px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);font-variant-numeric:tabular-nums}
 .opt.ok{background:var(--ok);border-color:var(--ok);color:var(--btn-ink)}
 .opt.bad{background:var(--bad);border-color:var(--bad);color:var(--btn-ink)}
 .msg{min-height:1.6em;text-align:center;font-weight:600;margin-top:10px}
@@ -101,7 +92,7 @@ body.help .mlabel{display:inline}
 @media(min-width:560px){.minis{grid-template-columns:repeat(4,1fr)}}
 .mini{text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
 .mini svg{width:100%;max-width:130px;height:auto}
-.mini b{font:800 1.15rem var(--num);font-variant-numeric:tabular-nums}
+.mini b{font:700 1.15rem var(--num);font-variant-numeric:tabular-nums}
 .mini span{font-size:13px;color:var(--muted)}
 .rules{margin:0;padding-left:1.2em}
 .rules li{margin:6px 0}
@@ -119,8 +110,8 @@ body.help .mlabel{display:inline}
 .mcard .in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .35s}
 .mcard.flip .in{transform:rotateY(180deg)}
 .mback,.mfront{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--line)}
-.mback{background:var(--blue);color:var(--btn-ink);font:800 2rem var(--num)}
-.mfront{transform:rotateY(180deg);background:var(--card);font:800 1.3rem var(--num);font-variant-numeric:tabular-nums;flex-direction:column}
+.mback{background:var(--blue);color:var(--btn-ink);font:700 2rem var(--num)}
+.mfront{transform:rotateY(180deg);background:var(--card);font:700 1.3rem var(--num);font-variant-numeric:tabular-nums;flex-direction:column}
 .mfront svg{width:86%;height:auto}
 .mfront small{font-size:1.05rem;line-height:1}
 .mcard.done .mfront{border-color:var(--ok);border-width:3px}
@@ -131,18 +122,109 @@ body.help .mlabel{display:inline}
 .conf{position:fixed;font-size:1.7rem;pointer-events:none;z-index:60;animation:fall 1.3s ease-out forwards}
 @keyframes fall{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--dx),68vh) rotate(var(--r));opacity:0}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* ═══ restyle: rfl-ops-dash language (flat neutrals, Barlow, 1px borders, no paper/shadows) ═══ */
+html{padding-top:0;-webkit-text-size-adjust:100%}
+body{background:var(--paper);background-image:none;color:var(--ink);font:15px/1.5 var(--txt)}
+.app{max-width:var(--w);margin:0 auto;padding:14px 16px calc(40px + env(safe-area-inset-bottom,0px));min-height:0}
+.app::before{display:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+header.hdr{position:sticky;top:0;z-index:10;display:block;margin:0;padding:env(safe-area-inset-top,0px) 0 0;background:var(--paper);border-bottom:1px solid var(--line)}
+.hdr-in{max-width:var(--w);margin:0 auto;display:flex;align-items:center;gap:8px;padding:0 16px;height:52px}
+.hdr .back{display:inline-flex;align-items:center;margin:0;padding:4px 8px;font-size:13px;color:var(--faint);text-decoration:none;border:1px solid var(--line);border-radius:var(--rs);flex-shrink:0;white-space:nowrap}
+.hdr .back:hover{color:var(--ink);background:var(--chip)}
+@media(max-width:480px){.hdr .back .bt{display:none}}
+.hdr h1{flex:1;min-width:0;margin:0;font:600 20px/1.2 var(--num);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr .theme{width:30px;height:30px;padding:0;border:1px solid var(--line);border-radius:var(--rs);background:none;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.hdr .theme:hover{background:var(--chip);color:var(--ink)}
+.who-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);border-radius:var(--rs);padding:2px 10px 2px 3px;cursor:pointer;font:600 13px var(--txt);color:var(--ink);flex-shrink:0}
+.who-chip:hover{background:var(--chip)}
+.av{border-radius:6px;font:600 15px var(--num)}
+.who-chip .av{width:24px;height:24px;font-size:13px}
+.sync{font-size:12px;color:var(--faint);margin:-4px 0 10px;min-height:16px}
+.sync.err{color:var(--bad)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;box-shadow:none}
+.card h2{font:600 14px/1.3 var(--txt);margin:0 0 10px;color:var(--ink)}
+.hint{color:var(--muted);font-size:13px}
+.label{font-size:13px;color:var(--muted)}
+.tabs{display:flex;flex-wrap:nowrap;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none;gap:2px;margin:0 0 14px;padding:3px;background:var(--chip);border:1px solid var(--line);border-radius:var(--rs)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:5px 12px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--muted);font:500 13px var(--txt);white-space:nowrap;cursor:pointer}
+.tab:hover:not([aria-selected="true"]){color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--card);color:var(--ink);border-color:var(--line)}
+.seg{display:inline-flex;padding:3px;gap:2px;border:1px solid var(--line);border-radius:var(--rs);overflow:visible;background:var(--chip)}
+.seg button{padding:5px 12px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--muted);font:500 13px var(--txt)}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);border-color:var(--line)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:var(--rs);font:500 14px var(--txt);cursor:pointer;transition:background .12s}
+.btn:hover{background:var(--chip)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:var(--on-accent)}
+.btn.primary:hover{background:var(--blue);opacity:.92}
+.btn.ghost{background:transparent}
+.btn.ghost:hover{background:var(--chip)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.field{font-size:13px;color:var(--muted)}
+.field input,.row input[type=text]{border:1px solid var(--line);border-radius:var(--rs);padding:9px 11px;background:var(--paper);color:var(--ink);font:500 16px var(--txt)}
+.field input:focus,.row input[type=text]:focus{outline:none;border-color:var(--blue)}
+.cerr{font-size:13px;color:var(--bad)}
+.prof{border:1px solid var(--line);border-radius:var(--r);background:var(--card);font:600 17px var(--num)}
+.prof:hover{border-color:var(--line-s)}
+.prof .x{font:500 12px var(--txt)}
+.foot button{color:var(--faint)}
+.foot button:hover{color:var(--blue)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.hdr-in{gap:6px}
+.pill{border:1px solid var(--line);background:var(--card);border-radius:var(--rs);padding:3px 10px;font:600 13px var(--txt);gap:6px;flex-shrink:0}
+.pill svg{color:var(--gold)}
+.levels small{font-size:13px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:var(--rs);padding:4px 11px;font:500 13px var(--txt)}
+.chip:hover{border-color:var(--line-s)}
+.chip[aria-pressed="true"]{background:var(--blue-soft);color:var(--blue);border-color:var(--blue-line)}
+.lcd{background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:var(--r);padding:2px 22px;font:600 clamp(2.4rem,11vw,3.4rem)/1.2 var(--num);letter-spacing:.04em}
+.phrase{font:600 1.15rem var(--num)}
+.period{border-radius:var(--rs);background:var(--chip);font:500 14px var(--txt)}
+.btn{border:1px solid var(--blue);background:var(--blue);color:var(--on-accent);padding:8px 14px;border-radius:var(--rs);font:500 14px var(--txt)}
+.btn:hover{background:var(--blue);opacity:.92}
+.btn.alt{background:var(--card);color:var(--ink);border-color:var(--line)}
+.btn.alt:hover{background:var(--chip);opacity:1}
+.btn.alt[aria-pressed="true"]{background:var(--blue-soft);color:var(--blue);border-color:var(--blue-line)}
+.btn.sm{padding:5px 11px;font-size:13px}
+.progress{height:6px;border-radius:3px}
+.stat{font-size:13px}
+.opt{border:1px solid var(--line);border-radius:var(--r);font:600 1.5rem var(--num);padding:12px 8px}
+.opt:hover{border-color:var(--line-s)}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.opt.bad{background:var(--bad);border-color:var(--bad);color:var(--on-accent)}
+.mini b{font:600 1.1rem var(--num)}
+.per,.conv div{border-radius:var(--rs)}
+.per b{font-weight:600}
+.mback,.mfront{border-radius:var(--r);border:1px solid var(--line)}
+.mback{background:var(--blue);border-color:var(--blue);color:var(--on-accent);font:600 1.8rem var(--num)}
+.mfront{font:600 1.3rem var(--num)}
+.mcard.done .mfront{border-color:var(--ok);border-width:2px}
+.result h2{font:600 24px var(--num);margin:6px 0}
+
+html .fam-card{border-radius:var(--r);padding:18px}
+html .fam-card h2{font:600 18px var(--num)}
+html .fam-card input{border-radius:var(--rs);font:500 16px var(--txt)}
+html .fam-btn{font:500 14px var(--txt);background:var(--card);border-radius:var(--rs);padding:8px 14px}
+html .fam-btn.p{background:var(--blue);border-color:var(--blue);color:var(--on-accent)}
+html .fam-btn.g{background:transparent}
+html .fam-prof{font:600 17px var(--num);border:1px solid var(--line);border-radius:var(--r)}
+html .fam-av{border-radius:6px;font-weight:600}
+html .fam-chip{border-radius:var(--rs);padding:2px 10px 2px 3px;font:600 13px var(--txt)}
 </style>
 </head>
 <body>
-<div class="app">
-  <header>
-    <a class="back" href="../">‹ dashboards</a>
+<header class="hdr"><div class="hdr-in">
+    <a class="back" href="../">‹<span class="bt"> dashboards</span></a>
     <h1>Aprende la hora</h1>
     <span id="slot"></span>
-    <span class="pill" title="Estrellas">⭐ <b id="stars">0</b></span>
+    <span class="pill" title="Estrellas"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 1.6l1.9 4.1 4.4.5-3.3 3 .9 4.4L8 11.4l-3.9 2.2.9-4.4-3.3-3 4.4-.5L8 1.6z" fill="currentColor"/></svg><b id="stars">0</b></span>
     <button class="theme" id="snd" type="button"></button>
     <button class="theme" id="themeBtn" type="button" aria-label="Cambiar tema" title="Tema">◐</button>
-  </header>
+  </div></header>
+<div class="app">
   <div class="sync" id="sync"></div>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Juegos"></nav>
   <div class="levels" id="levels"></div>
@@ -154,7 +236,8 @@ body.help .mlabel{display:inline}
 "use strict";
 var W=["","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve","veinte","veintiuno","veintidós","veintitrés","veinticuatro","veinticinco","veintiséis","veintisiete","veintiocho","veintinueve"];
 var LV=["","1 En punto","2 Y media","3 Cuartos","4 De 5 en 5","5 Todos"];
-var MODES=[["learn","🕒 Aprende"],["quiz","❓ ¿Qué hora es?"],["set","🖐️ Pon la hora"],["mem","🃏 Memoria"],["timed","⏱️ Contrarreloj"]];
+var MODES=[["learn","Aprende"],["quiz","¿Qué hora es?"],["set","Pon la hora"],["mem","Memoria"],["timed","Contrarreloj"]];
+var SVG_SND='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6v4h3l4 3V3L5 6H2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M11.5 5.5a3.5 3.5 0 010 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',SVG_MUTE='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6v4h3l4 3V3L5 6H2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M11.5 6l3 4M14.5 6l-3 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
 
 function norm(d){
   d=d||{};
@@ -190,11 +273,11 @@ function fmt(t){
 }
 function period(t){
   var d=((t%1440)+1440)%1440;
-  if(d===720)return {icon:"🌞",label:"Mediodía",suf:" del mediodía"};
-  if(d===0)return {icon:"🌙",label:"Medianoche",suf:" de la noche"};
-  if(d>=360&&d<720)return {icon:"☀️",label:"Por la mañana",suf:" de la mañana"};
-  if(d>720&&d<1200)return {icon:"🌤️",label:"Por la tarde",suf:" de la tarde"};
-  return {icon:"🌙",label:"Por la noche",suf:" de la noche"};
+  if(d===720)return {icon:"",label:"Mediodía",suf:" del mediodía"};
+  if(d===0)return {icon:"",label:"Medianoche",suf:" de la noche"};
+  if(d>=360&&d<720)return {icon:"",label:"Por la mañana",suf:" de la mañana"};
+  if(d>720&&d<1200)return {icon:"",label:"Por la tarde",suf:" de la tarde"};
+  return {icon:"",label:"Por la noche",suf:" de la noche"};
 }
 function hourPhrase(n){return n===1?"la una":"las "+W[n]}
 function minWord(m){
@@ -368,7 +451,7 @@ function renderLevels(){
   $("#levels").innerHTML=
     (inLearn?'':'<small>Nivel</small>'+[1,2,3,4,5].map(function(i){
       return '<button class="chip" type="button" data-l="'+i+'" aria-pressed="'+(S.level===i)+'">'+LV[i]+'</button>';
-    }).join("")+'<button class="chip" type="button" id="help" aria-pressed="'+(!!S.help)+'">🔢 Ver minutos</button>')+
+    }).join("")+'<button class="chip" type="button" id="help" aria-pressed="'+(!!S.help)+'">Ver minutos</button>')+
     '<small>Reloj</small>'+
     '<button class="chip" type="button" data-f="12" aria-pressed="'+(S.fmt==="12")+'">12 h</button>'+
     '<button class="chip" type="button" data-f="24" aria-pressed="'+(S.fmt==="24")+'">24 h</button>';
@@ -395,7 +478,7 @@ $("#snd").addEventListener("click",function(){
 });
 function sndLabel(){
   var b=$("#snd");
-  b.textContent=MUTE?"🔇":"🔊";
+  b.innerHTML=MUTE?SVG_MUTE:SVG_SND;
   b.setAttribute("aria-label",MUTE?"Activar sonido":"Silenciar");
 }
 
@@ -412,7 +495,7 @@ function learn(){
     '<div class="lcd" id="dig"></div>'+
     '<div class="phrase" id="phr" aria-live="polite"></div>'+
     '<div class="period" id="per"></div>'+
-    '<div class="row"><button class="btn alt sm" type="button" id="am" aria-pressed="false">☀️ Antes del mediodía</button><button class="btn alt sm" type="button" id="pm" aria-pressed="true">🌙 Después del mediodía</button></div>'+
+    '<div class="row"><button class="btn alt sm" type="button" id="am" aria-pressed="false">Antes del mediodía</button><button class="btn alt sm" type="button" id="pm" aria-pressed="true">Después del mediodía</button></div>'+
     '<div class="row">'+
       '<button class="btn alt" type="button" data-m="0">En punto</button>'+
       '<button class="btn alt" type="button" data-m="15">Y cuarto</button>'+
@@ -420,10 +503,10 @@ function learn(){
       '<button class="btn alt" type="button" data-m="45">Menos cuarto</button>'+
     '</div>'+
     '<div class="row">'+
-      '<button class="btn" type="button" id="sp">🔊 Escuchar</button>'+
+      '<button class="btn" type="button" id="sp">Escuchar</button>'+
       '<label class="check"><input type="checkbox" id="mins"> Ver minutos</label>'+
     '</div>'+
-    '<p class="hint">👆 Arrastra la punta de la aguja azul y mira cómo cambia la hora.</p>'+
+    '<p class="hint">Arrastra la punta de la aguja azul y mira cómo cambia la hora.</p>'+
   '</div>'+
   '<div class="card"><h2>Los cuartos, con las 3</h2><div class="minis">'+minis+'</div></div>'+
   '<div class="card"><h2>Cómo se lee</h2><ul class="rules">'+
@@ -434,9 +517,9 @@ function learn(){
   '</ul></div>'+
   '<div class="card"><h2>El día tiene 24 horas</h2>'+
     '<div class="periods">'+
-      '<div class="per"><b>☀️ Mañana</b><span>de 6:00 a 11:59</span></div>'+
-      '<div class="per"><b>🌤️ Tarde</b><span>de 12:00 a 19:59</span></div>'+
-      '<div class="per"><b>🌙 Noche</b><span>de 20:00 a 5:59</span></div>'+
+      '<div class="per"><b>Mañana</b><span>de 6:00 a 11:59</span></div>'+
+      '<div class="per"><b>Tarde</b><span>de 12:00 a 19:59</span></div>'+
+      '<div class="per"><b>Noche</b><span>de 20:00 a 5:59</span></div>'+
     '</div>'+
     '<p class="hint" style="text-align:left">Después de las 12:00 el reloj de 24 horas sigue contando: 13, 14, 15… Para saber la hora del reloj de agujas, <b>resta 12</b>: las 15:00 son las 3 de la tarde.</p>'+
     '<div class="conv">'+conv+'</div>'+
@@ -446,7 +529,7 @@ function learn(){
     var D=t+half*720;
     $("#dig").textContent=fmt(D);
     $("#phr").textContent=phrase(D);
-    var pr=period(D); $("#per").textContent=pr.icon+" "+pr.label;
+    var pr=period(D); $("#per").textContent=pr.label;
     $("#am").setAttribute("aria-pressed",String(half===0));
     $("#pm").setAttribute("aria-pressed",String(half===1));
     var sv=$("svg",host); if(sv)sv.setAttribute("aria-label","Reloj: "+phrase(D));
@@ -483,7 +566,7 @@ function quiz(timed){
   cleanup=function(){clearInterval(timer);clearTimeout(to)};
   function hud(){
     $("#s1").textContent=timed?"⏱️ "+left+" s":"Pregunta "+Math.min(n+1,N)+" de "+N;
-    $("#s2").textContent="✅ "+ok;
+    $("#s2").textContent="Aciertos "+ok;
     $("#pg").style.width=((timed?left/60:n/N)*100)+"%";
   }
   function next(){
@@ -493,7 +576,7 @@ function quiz(timed){
     var t; do{t=randTime(S.level)}while(t===cur);
     cur=t;
     $("#host").innerHTML=faceSVG({total:cur});
-    var pr=period(cur); $("#per").textContent=pr.icon+" "+pr.label;
+    var pr=period(cur); $("#per").textContent=pr.label;
     $("#phr").innerHTML="&nbsp;"; $("#msg").textContent="";
     var o=shuffle([cur].concat(distractors(cur,S.level)));
     $("#opts").innerHTML=o.map(function(t){return '<button class="opt" type="button" data-t="'+t+'">'+fmt(t)+'</button>'}).join("");
@@ -524,12 +607,12 @@ function quiz(timed){
     if(timed&&ok>0&&ok>(S.best[k]||0)){S.best[k]=ok;isNew=true}
     save();
     var lvl=timed?(ok>=10?3:ok>=6?2:ok>=3?1:0):(ok>=9?3:ok>=7?2:ok>=4?1:0);
-    var r=[["💪","¡A seguir practicando!"],["👍","¡Vas bien!"],["🌟","¡Muy bien!"],["🏆","¡Increíble!"]][lvl];
+    var r=[["","¡A seguir practicando!"],["","¡Vas bien!"],["","¡Muy bien!"],["","¡Increíble!"]][lvl];
     var canUp=ok>=8&&S.level<5;
     card.innerHTML=
-      '<div class="result"><div class="big">'+r[0]+'</div><h2>'+r[1]+'</h2>'+
+      '<div class="result"><h2>'+r[1]+'</h2>'+
       '<p class="sum">'+(timed?ok+" correctas en 60 segundos":ok+" de "+N+" bien")+'. Has ganado '+ok+' ⭐</p>'+
-      (timed?'<p class="sum">Récord en el nivel '+S.level+': <b>'+(S.best[k]||0)+'</b>'+(isNew?' 🎉 ¡Nuevo récord!':'')+'</p>':'')+
+      (timed?'<p class="sum">Récord en el nivel '+S.level+': <b>'+(S.best[k]||0)+'</b>'+(isNew?' · ¡Nuevo récord!':'')+'</p>':'')+
       '<div class="row"><button class="btn" type="button" id="again">Jugar otra vez</button>'+
       (canUp?'<button class="btn alt" type="button" id="up">Subir al nivel '+(S.level+1)+'</button>':'')+'</div></div>';
     $("#again").onclick=function(){quiz(timed)};
@@ -558,9 +641,9 @@ function setGame(){
     '<div class="phrase" id="phr"></div>'+
     '<div class="clock-wrap" id="host"></div>'+
     '<div class="row"><button class="btn alt" type="button" id="hm">− 1 hora</button><button class="btn alt" type="button" id="hp">+ 1 hora</button></div>'+
-    '<div class="row"><button class="btn" type="button" id="go">Comprobar ✓</button></div>'+
+    '<div class="row"><button class="btn" type="button" id="go">Comprobar</button></div>'+
     '<div class="msg" id="msg" aria-live="polite"></div>'+
-    '<p class="hint">👆 Arrastra la punta de la aguja azul. La roja la acompaña.</p>'+
+    '<p class="hint">Arrastra la punta de la aguja azul. La roja la acompaña.</p>'+
   '</div>';
   var card=view.firstElementChild;
   function hud(){
@@ -577,7 +660,7 @@ function setGame(){
     $("#dig").textContent=fmt(target);
     $("#phr").textContent=phrase(target);
     $("#msg").textContent="";
-    $("#go").textContent="Comprobar ✓";
+    $("#go").textContent="Comprobar";
     $("#host").innerHTML=faceSVG({total:s,interactive:true});
     api=liveClock($("#host"),{total:s,snap:snap});
     hud();
@@ -586,7 +669,7 @@ function setGame(){
   $("#hp").onclick=function(){api.set(api.total+60)};
   function toNext(){
     state="next";
-    $("#go").textContent=(n===N-1)?"Ver resultado ➜":"Siguiente ➜";
+    $("#go").textContent=(n===N-1)?"Ver resultado →":"Siguiente →";
     hud();
   }
   $("#go").onclick=function(){
@@ -612,9 +695,9 @@ function setGame(){
   function finish(){
     done=true;
     var lvl=firstTry>=7?3:firstTry>=5?2:firstTry>=3?1:0;
-    var r=[["💪","¡A seguir practicando!"],["👍","¡Vas bien!"],["🌟","¡Muy bien!"],["🏆","¡Increíble!"]][lvl];
+    var r=[["","¡A seguir practicando!"],["","¡Vas bien!"],["","¡Muy bien!"],["","¡Increíble!"]][lvl];
     card.innerHTML=
-      '<div class="result"><div class="big">'+r[0]+'</div><h2>'+r[1]+'</h2>'+
+      '<div class="result"><h2>'+r[1]+'</h2>'+
       '<p class="sum">'+firstTry+' de '+N+' a la primera. Has ganado '+firstTry+' ⭐</p>'+
       '<div class="row"><button class="btn" type="button" id="again">Jugar otra vez</button>'+
       (firstTry>=6&&S.level<5?'<button class="btn alt" type="button" id="up">Subir al nivel '+(S.level+1)+'</button>':'')+'</div></div>';
@@ -671,9 +754,9 @@ function memory(){
     var res=$("#res");
     res.hidden=false;
     res.innerHTML=
-      '<div class="big">'+(st===3?"🏆":st===2?"🌟":"👍")+'</div><h2>¡Todas las parejas!</h2>'+
+      '<h2>¡Todas las parejas!</h2>'+
       '<p class="sum">'+moves+' intentos. Has ganado '+st+' ⭐</p>'+
-      '<p class="sum">Mejor marca en el nivel '+S.level+': <b>'+S.best[k]+'</b>'+(isNew?' 🎉 ¡Nueva!':'')+'</p>'+
+      '<p class="sum">Mejor marca en el nivel '+S.level+': <b>'+S.best[k]+'</b>'+(isNew?' · ¡Nueva!':'')+'</p>'+
       '<div class="row"><button class="btn" type="button" id="again">Jugar otra vez</button></div>';
     $("#again").onclick=memory;
     confetti();
@@ -694,8 +777,6 @@ $("#themeBtn").onclick=function(){
 (function(){var t="auto";try{t=localStorage.getItem("dash:theme")||"auto"}catch(e){}applyTheme(t)})();
 hudStars(); sndLabel(); applyHelp(); renderTabs(); renderLevels();
 if(window.FamProfiles){
-  $("#slot").appendChild(window.FamProfiles.chip());
-  $("#sync").appendChild(window.FamProfiles.syncEl());
   window.FamProfiles.init({
     app:"reloj",
     lang:function(){return "es"},
@@ -705,6 +786,8 @@ if(window.FamProfiles){
     onLoad:function(d){S=d;hudStars();applyHelp();go("learn");window.scrollTo(0,0)},
     onData:function(d){S=d;hudStars()}
   });
+  $("#slot").appendChild(window.FamProfiles.chip());
+  $("#sync").appendChild(window.FamProfiles.syncEl());
 }else{
   go("learn");
 }

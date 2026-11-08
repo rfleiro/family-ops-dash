@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <title>World Atlas Study Dashboard</title>
 <style>
 :root{
@@ -161,7 +164,7 @@ circle.gm.target{fill:none}
 .famslot{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .po{position:fixed;inset:0;z-index:40;background:rgba(10,14,22,.55);display:grid;place-items:center;padding:14px;overflow:auto}
 .po[hidden]{display:none}
-.po-card{width:min(580px,100%);max-height:calc(100vh - 28px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.po-card{width:min(580px,100%);max-height:calc(100vh - 28px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .po-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
 .po-head h3{margin:0;font-size:17px}
 .po-note{font-size:12.5px;color:var(--muted);margin:2px 0 10px}
@@ -190,6 +193,42 @@ th.sortable:hover{color:var(--ink)}
 #focus{margin-left:4px}
 .group.scroll{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px;-webkit-overflow-scrolling:touch}
 .group.scroll>*{flex:0 0 auto}
+/* ===== look aligned with rfl-ops-dash: flat neutrals, Barlow, 1px borders, segmented controls ===== */
+:root{--bg:#F7F6F3;--panel:#FFFFFF;--ink:#1A1916;--muted:#6B6760;--line:#E2DED6;--chip:#F0EEE9;--accent:#2563EB;--chip-on:#1A1916;--chip-on-ink:#F7F6F3;--cap:#DC2626;--halo:rgba(247,246,243,.88);--ocean:#E3ECF3;--neutral:#CFCBC3;--other:#DDDAD3}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#141412;--panel:#1E1D1A;--ink:#F0EDE8;--muted:#A09C94;--line:#2E2C28;--chip:#252320;--accent:#4F83F7;--chip-on:#F0EDE8;--chip-on-ink:#141412;--cap:#F87171;--halo:rgba(20,20,18,.88);--ocean:#17212B;--neutral:#46433E;--other:#2A2926}}
+body{font:15px/1.45 "Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+.app{gap:12px}
+header{align-items:center;gap:8px 12px;padding-bottom:2px}
+h1{font:700 24px/1.1 "Barlow Condensed","Arial Narrow",system-ui,sans-serif;letter-spacing:.005em}
+.sub{font-size:13.5px;color:var(--muted);flex:1 1 180px;min-width:0}
+.backlink{font-size:14px}
+.bar{border-radius:10px;padding:10px 12px;gap:10px 16px}
+.mapwrap,.side{border-radius:10px}
+.glabel{font-size:11px;font-weight:600;letter-spacing:.08em}
+/* segmented controls (label becomes the first cell) */
+.seg{display:inline-flex;flex-wrap:nowrap;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--chip);align-items:stretch}
+.seg .glabel{display:flex;align-items:center;margin:0;padding:0 11px;border-right:1px solid var(--line);background:var(--panel);color:var(--muted)}
+.seg button{border:0;border-radius:0;background:transparent;padding:6px 13px;font-weight:500;font-size:14px;border-right:1px solid var(--line);gap:7px}
+.seg button:last-child{border-right:0}
+.seg button:hover{border-color:var(--line);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.seg button[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-ink);font-weight:600}
+.group.scroll{border-radius:10px;overflow-x:auto;padding-bottom:0}
+#focus{margin-left:2px}
+#focus button{font-weight:600;padding:6px 14px}
+.sw{border:0;width:9px;height:9px}
+.btn{border-radius:9px;font-weight:500;padding:6px 12px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#0B1220}}
+.zbtns button{border-radius:8px}
+.gbar{box-shadow:none;border-radius:10px}
+.modes button{border-radius:10px}
+.land{stroke-width:.6px}
+.tip{border-radius:8px;font-size:13px}
+.tog .track::after{box-shadow:none}
+input[type=search],.gtype input,.gpanel select{border-radius:8px}
+th{font-weight:600}
+th.sortable:hover{color:var(--ink)}
+@media (max-width:700px){h1{font-size:21px}.sub{flex-basis:100%;order:3}.seg{max-width:100%}.bar .group.seg{width:auto}#conts.seg{width:100%}}
 </style>
 </head>
 <body>
@@ -309,9 +348,9 @@ const I18N={
 en:{
  f_world:"World", f_es:"Spain", f_gl:"Galicia", lv_ccaa:"Regions", lv_prov:"Provinces", lv_conc:"Municipalities", level:"Level",
  layer:"Layer", l_cont:"Continents", l_pop:"Population", l_area:"Area", l_dens:"Density", u_area:"km²", u_dens:"per km²", tPop:"Pop.", src:"Population 2024: Our World in Data (UN WPP) · Area in km²", sortHint:"Click to change the order",
- title:"World Atlas Study Dashboard", subTail:"drag to pan, scroll or pinch to zoom, click a country to reveal it", statN:"{n} countries",
+ title:"World Atlas Study Dashboard", subTail:"drag to pan, scroll to zoom, click a country to reveal it", statN:"{n} countries",
  region:"Region", world:"World", show:"Show", countries:"Countries", capitals:"Capitals", colors:"Continent colours", knames:"Continent names",
- hoverAns:"Hover shows answer", play:"🎮 Play game", exitGame:"✕ Exit game", hint:"Hidden labels? Click a country to reveal it.",
+ hoverAns:"Hover shows answer", play:"Play game", exitGame:"✕ Exit game", hint:"Hidden labels? Click a country to reveal it.",
  revealAll:"Reveal all", hideAll:"Hide all", filter:"Filter countries or capitals…", thCountry:"Country", thCapital:"Capital", revealTitle:"Click to reveal",
  cntWorld:"{n} countries", cntIn:"{n} in {scope}", cntFilt:"{a} of {b}", revealedN:"{n} revealed", zoomIn:"Zoom in", zoomOut:"Zoom out", mapLabel:"World map",
  k_Africa:"Africa", k_Asia:"Asia", k_Europe:"Europe", "k_North America":"North America", "k_South America":"South America", k_Oceania:"Oceania",
@@ -334,9 +373,9 @@ en:{
 es:{
  f_world:"Mundo", f_es:"España", f_gl:"Galicia", lv_ccaa:"Comunidades", lv_prov:"Provincias", lv_conc:"Municipios", level:"Nivel",
  layer:"Capa", l_cont:"Continentes", l_pop:"Población", l_area:"Superficie", l_dens:"Densidad", u_area:"km²", u_dens:"por km²", tPop:"Pob.", src:"Población 2024: Our World in Data (ONU WPP) · Superficie en km²", sortHint:"Clic para cambiar el orden",
- title:"Atlas mundial de estudio", subTail:"arrastra para mover, usa la rueda o pellizca para hacer zoom, haz clic en un país para revelarlo", statN:"{n} países",
+ title:"Atlas mundial de estudio", subTail:"arrastra, haz zoom y haz clic en un país para revelarlo", statN:"{n} países",
  region:"Región", world:"Mundo", show:"Mostrar", countries:"Países", capitals:"Capitales", colors:"Colores por continente", knames:"Nombres de continentes",
- hoverAns:"Mostrar respuesta al pasar el ratón", play:"🎮 Jugar", exitGame:"✕ Salir del juego", hint:"¿Etiquetas ocultas? Haz clic en un país para revelarlo.",
+ hoverAns:"Mostrar respuesta al pasar el ratón", play:"Jugar", exitGame:"✕ Salir del juego", hint:"¿Etiquetas ocultas? Haz clic en un país para revelarlo.",
  revealAll:"Revelar todo", hideAll:"Ocultar todo", filter:"Filtrar países o capitales…", thCountry:"País", thCapital:"Capital", revealTitle:"Clic para revelar",
  cntWorld:"{n} países", cntIn:"{n} en {scope}", cntFilt:"{a} de {b}", revealedN:"{n} revelados", zoomIn:"Acercar", zoomOut:"Alejar", mapLabel:"Mapamundi",
  k_Africa:"África", k_Asia:"Asia", k_Europe:"Europa", "k_North America":"América del Norte", "k_South America":"América del Sur", k_Oceania:"Oceanía",
@@ -359,9 +398,9 @@ es:{
 gl:{
  f_world:"Mundo", f_es:"España", f_gl:"Galicia", lv_ccaa:"Comunidades", lv_prov:"Provincias", lv_conc:"Concellos", level:"Nivel",
  layer:"Capa", l_cont:"Continentes", l_pop:"Poboación", l_area:"Superficie", l_dens:"Densidade", u_area:"km²", u_dens:"por km²", tPop:"Pob.", src:"Poboación 2024: Our World in Data (ONU WPP) · Superficie en km²", sortHint:"Preme para cambiar a orde",
- title:"Atlas mundial de estudo", subTail:"arrastra para mover, usa a roda ou pelisca para facer zoom, preme nun país para revelalo", statN:"{n} países",
+ title:"Atlas mundial de estudo", subTail:"arrastra, fai zoom e preme nun país para revelalo", statN:"{n} países",
  region:"Rexión", world:"Mundo", show:"Amosar", countries:"Países", capitals:"Capitais", colors:"Cores dos continentes", knames:"Nomes dos continentes",
- hoverAns:"Amosar a resposta ao pasar o rato", play:"🎮 Xogar", exitGame:"✕ Saír do xogo", hint:"Etiquetas agochadas? Preme nun país para revelalo.",
+ hoverAns:"Amosar a resposta ao pasar o rato", play:"Xogar", exitGame:"✕ Saír do xogo", hint:"Etiquetas agochadas? Preme nun país para revelalo.",
  revealAll:"Revelar todo", hideAll:"Agochar todo", filter:"Filtrar países ou capitais…", thCountry:"País", thCapital:"Capital", revealTitle:"Preme para revelar",
  cntWorld:"{n} países", cntIn:"{n} en {scope}", cntFilt:"{a} de {b}", revealedN:"{n} revelados", zoomIn:"Achegar", zoomOut:"Afastar", mapLabel:"Mapamundi",
  k_Africa:"África", k_Asia:"Asia", k_Europe:"Europa", "k_North America":"América do Norte", "k_South America":"América do Sur", k_Oceania:"Oceanía",
@@ -1211,11 +1250,11 @@ setDataset(INIT_KEY); layout();
 /* ===== per-child progress =====
    Saved in the private FamilyOps repo through ../shared/profiles.js (public code, no data). */
 const PT={
- en:{btn:"📊 Progress",title:"Progress",guest:"Guest mode: progress is only kept in this browser.",all:"All regions",solid:"Solid",ok:"Learning",weak:"To review",unseen:"Not played yet",
+ en:{btn:"Progress",title:"Progress",guest:"Guest mode: progress is only kept in this browser.",all:"All regions",solid:"Solid",ok:"Learning",weak:"To review",unseen:"Not played yet",
      review:"To review",none:"Nothing to review yet — play a game!",practise:"Practise these",recent:"Recent games",nosess:"No games yet.",countries:"countries",close:"Close"},
- es:{btn:"📊 Progreso",title:"Progreso",guest:"Modo invitado: el progreso solo se guarda en este navegador.",all:"Todo el mundo",solid:"Sólidos",ok:"Aprendiendo",weak:"Para repasar",unseen:"Sin jugar",
+ es:{btn:"Progreso",title:"Progreso",guest:"Modo invitado: el progreso solo se guarda en este navegador.",all:"Todo el mundo",solid:"Sólidos",ok:"Aprendiendo",weak:"Para repasar",unseen:"Sin jugar",
      review:"Para repasar",none:"Nada que repasar todavía: ¡juega una partida!",practise:"Practicar estos",recent:"Últimas partidas",nosess:"Aún no hay partidas.",countries:"países",close:"Cerrar"},
- gl:{btn:"📊 Progreso",title:"Progreso",guest:"Modo convidado: o progreso só se garda neste navegador.",all:"Todo o mundo",solid:"Sólidos",ok:"Aprendendo",weak:"Para repasar",unseen:"Sen xogar",
+ gl:{btn:"Progreso",title:"Progreso",guest:"Modo convidado: o progreso só se garda neste navegador.",all:"Todo o mundo",solid:"Sólidos",ok:"Aprendendo",weak:"Para repasar",unseen:"Sen xogar",
      review:"Para repasar",none:"Nada que repasar aínda: xoga unha partida!",practise:"Practicar estes",recent:"Últimas partidas",nosess:"Aínda non hai partidas.",countries:"países",close:"Pechar"}
 };
 const pt=k=>((DS&&DS.pt&&DS.pt[L]&&DS.pt[L][k])||(PT[L]||PT.en)[k]);

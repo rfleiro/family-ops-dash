@@ -242,7 +242,7 @@ var SVG_SND='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d
 function norm(d){
   d=d||{};
   var b=(d.best&&typeof d.best==="object")?d.best:{};
-  return {stars:Math.max(0,+d.stars||0),level:Math.min(5,Math.max(1,+d.level||1)),help:!!d.help,fmt:d.fmt==="24"?"24":"12",best:b};
+  return {stars:Math.max(0,+d.stars||0),level:Math.min(5,Math.max(1,+d.level||1)),help:!!d.help,fmt:d.fmt==="24"?"24":"12",lang:d.lang==="en"?"en":"es",best:b};
 }
 function mergeData(remote,local){
   remote=norm(remote); local=norm(local);
@@ -251,7 +251,7 @@ function mergeData(remote,local){
     var a=best[k], b=local.best[k];
     best[k]=(a==null)?b:(k.charAt(0)==="m"?Math.min(a,b):Math.max(a,b));
   });
-  return {stars:Math.max(remote.stars,local.stars),level:local.level,help:local.help,fmt:local.fmt,best:best};
+  return {stars:Math.max(remote.stars,local.stars),level:local.level,help:local.help,fmt:local.fmt,lang:local.lang,best:best};
 }
 var S=norm({});
 var MUTE=false;
@@ -269,10 +269,18 @@ function clockStr(t){t=((t%720)+720)%720;return (Math.floor(t/60)||12)+":"+pad(t
 function fmt(t){
   t=((t%1440)+1440)%1440;
   if(S.fmt==="24")return pad(Math.floor(t/60))+":"+pad(t%60);
-  return clockStr(t);
+  return clockStr(t)+(S.lang==="en"?(t<720?" am":" pm"):"");
 }
 function period(t){
   var d=((t%1440)+1440)%1440;
+  if(S.lang==="en"){
+    if(d===720)return {icon:"",label:"Noon",suf:""};
+    if(d===0)return {icon:"",label:"Midnight",suf:""};
+    if(d>=300&&d<720)return {icon:"",label:"In the morning",suf:" in the morning"};
+    if(d>720&&d<1080)return {icon:"",label:"In the afternoon",suf:" in the afternoon"};
+    if(d>=1080&&d<1260)return {icon:"",label:"In the evening",suf:" in the evening"};
+    return {icon:"",label:"At night",suf:" at night"};
+  }
   if(d===720)return {icon:"",label:"Mediodía",suf:" del mediodía"};
   if(d===0)return {icon:"",label:"Medianoche",suf:" de la noche"};
   if(d>=360&&d<720)return {icon:"",label:"Por la mañana",suf:" de la mañana"};
@@ -286,7 +294,23 @@ function minWord(m){
   if(m===1)return "un minuto";
   return m%5===0?W[m]:W[m]+" minutos";
 }
+var EW=["","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty-one","twenty-two","twenty-three","twenty-four","twenty-five","twenty-six","twenty-seven","twenty-eight","twenty-nine"];
+function minWordEn(m){
+  if(m===15)return "a quarter";
+  if(m===30)return "half";
+  if(m===1)return "one minute";
+  return m%5===0?EW[m]:EW[m]+" minutes";
+}
+function phraseEn(u){
+  var b=u%720, h=Math.floor(b/60)||12, m=b%60, nh=h%12+1, suf=period(u).suf;
+  if(u===720)return "It’s twelve noon";
+  if(u===0)return "It’s twelve midnight";
+  if(m===0)return "It’s "+EW[h]+" o’clock"+suf;
+  if(m<=30)return "It’s "+minWordEn(m)+" past "+EW[h]+suf;
+  return "It’s "+minWordEn(60-m)+" to "+EW[nh]+suf;
+}
 function phrase(t){
+  if(S.lang==="en")return phraseEn(((t%1440)+1440)%1440);
   var u=((t%1440)+1440)%1440, b=u%720, h=Math.floor(b/60)||12, m=b%60, nh=h%12+1, suf=period(u).suf;
   var verb=function(n){return n===1?"Es":"Son"};
   if(m===0)return verb(h)+" "+hourPhrase(h)+" en punto"+suf;
@@ -348,7 +372,7 @@ function beep(freqs){
 function speak(text){
   try{
     var u=new SpeechSynthesisUtterance(text);
-    u.lang="es-ES"; u.rate=0.9;
+    u.lang=S.lang==="en"?"en-GB":"es-ES"; u.rate=0.9;
     window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -439,22 +463,88 @@ function liveClock(host,o){
   return api;
 }
 
+/* ---------- Idioma ---------- */
+var EN={
+"Aprende la hora":"Learn to tell the time","Estrellas":"Stars","Cambiar tema":"Change theme","Tema":"Theme","Juegos":"Games",
+"Activar sonido":"Turn sound on","Silenciar":"Mute",
+"Aprende":"Learn","¿Qué hora es?":"What time is it?","Pon la hora":"Set the time","Memoria":"Memory","Contrarreloj":"Against the clock",
+"1 En punto":"1 O’clock","2 Y media":"2 Half past","3 Cuartos":"3 Quarters","4 De 5 en 5":"4 Every 5 min","5 Todos":"5 Any minute",
+"Nivel":"Level","Ver minutos":"Show minutes","Reloj":"Clock","Idioma":"Language",
+"Aguja corta":"Short hand","Aguja larga":"Long hand","horas":"hours","minutos":"minutes",
+"Antes del mediodía":"Before noon","Después del mediodía":"After noon",
+"En punto":"O’clock","Y cuarto":"Quarter past","Y media":"Half past","Menos cuarto":"Quarter to","Escuchar":"Listen",
+"Arrastra la punta de la aguja azul y mira cómo cambia la hora.":"Drag the tip of the blue hand and watch the time change.",
+"Los cuartos, con las 3":"Quarters, with 3 o’clock","Cómo se lee":"How to say it","El día tiene 24 horas":"The day has 24 hours",
+"Pregunta {a} de {b}":"Question {a} of {b}","Aciertos {a}":"Correct {a}",
+"¡Correcto!":"Correct!","¡Muy bien!":"Very good!","¡Eso es!":"That’s it!","¡Genial!":"Great!",
+"¡Casi! Mira la solución.":"Almost! Look at the answer.",
+"¡A seguir practicando!":"Keep practising!","¡Vas bien!":"You’re doing well!","¡Increíble!":"Amazing!",
+"{a} correctas en 60 segundos":"{a} correct in 60 seconds","{a} de {b} bien":"{a} of {b} right","Has ganado {a} ⭐":"You earned {a} ⭐",
+"Récord en el nivel {a}:":"Best at level {a}:","¡Nuevo récord!":"New record!","Jugar otra vez":"Play again","Subir al nivel {a}":"Go up to level {a}",
+"Pon esta hora en el reloj":"Put this time on the clock","− 1 hora":"− 1 hour","+ 1 hora":"+ 1 hour","Comprobar":"Check",
+"Arrastra la punta de la aguja azul. La roja la acompaña.":"Drag the tip of the blue hand. The red one follows.",
+"Reto {a} de {b}":"Task {a} of {b}","¡Perfecto!":"Perfect!","¡Bien! Lo has conseguido.":"Well done! You got it.",
+"Así se pone: {a}.":"Like this: {a}.","La hora está bien, pero revisa los minutos (aguja azul).":"The hour is right, but check the minutes (blue hand).",
+"Ahora marca {a}. ¡Inténtalo otra vez!":"It shows {a}. Try again!","Ver resultado →":"See result →","Siguiente →":"Next →",
+"{a} de {b} a la primera. Has ganado {a} ⭐":"{a} of {b} on the first try. You earned {a} ⭐",
+"Intentos: {a}":"Tries: {a}","Parejas: {a} de 6":"Pairs: {a} of 6","Une cada reloj con su hora.":"Match each clock with its time.","Carta":"Card",
+"¡Todas las parejas!":"All the pairs!","{a} intentos. Has ganado {b} ⭐":"{a} tries. You earned {b} ⭐",
+"Mejor marca en el nivel {a}:":"Best at level {a}:","¡Nueva!":"New!"
+};
+function T(k,v){
+  var s=(S.lang==="en"&&EN[k]!==undefined)?EN[k]:k;
+  if(v)for(var x in v)s=s.split("{"+x+"}").join(v[x]);
+  return s;
+}
+var RULES={
+  es:['<li>Cada número del reloj vale <b>5 minutos</b>: el 1 son 5, el 2 son 10, el 3 son 15…</li>',
+      '<li>Hasta la media hora decimos <b>«y»</b>: las tres <b>y</b> diez.</li>',
+      '<li>Pasada la media hora decimos <b>«menos»</b> y la hora siguiente: las cuatro <b>menos</b> diez.</li>',
+      '<li>El 3 es <b>y cuarto</b>, el 6 es <b>y media</b> y el 9 es <b>menos cuarto</b>.</li>'],
+  en:['<li>Each number on the clock is worth <b>5 minutes</b>: 1 is 5, 2 is 10, 3 is 15…</li>',
+      '<li>When the long hand is on the 12 we say <b>o’clock</b>: three o’clock.</li>',
+      '<li>Up to half past we say <b>“past”</b>: ten <b>past</b> three (3:10).</li>',
+      '<li>After half past we say <b>“to”</b> and the next hour: ten <b>to</b> four (3:50).</li>',
+      '<li>The 3 is <b>a quarter past</b>, the 6 is <b>half past</b> and the 9 is <b>a quarter to</b>.</li>']
+};
+var PERIODS={
+  es:[['Mañana','de 6:00 a 11:59'],['Tarde','de 12:00 a 19:59'],['Noche','de 20:00 a 5:59']],
+  en:[['Morning','5:00–11:59'],['Afternoon','12:00–17:59'],['Evening','18:00–20:59'],['Night','21:00–4:59']]
+};
+var DAYTXT={
+  es:'Después de las 12:00 el reloj de 24 horas sigue contando: 13, 14, 15… Para saber la hora del reloj de agujas, <b>resta 12</b>: las 15:00 son las 3 de la tarde.',
+  en:'After 12:00 the 24-hour clock keeps counting: 13, 14, 15… To read the analogue clock, <b>subtract 12</b>: 15:00 is 3 p.m. We say <b>a.m.</b> before noon and <b>p.m.</b> after noon.'
+};
+function applyLang(){
+  document.documentElement.lang=S.lang;
+  document.title=T("Aprende la hora");
+  var h=$("h1"); if(h)h.textContent=T("Aprende la hora");
+  var p=$(".pill"); if(p)p.title=T("Estrellas");
+  $("#themeBtn").setAttribute("aria-label",T("Cambiar tema"));
+  $("#tabs").setAttribute("aria-label",T("Juegos"));
+  sndLabel();
+  if(window.FamProfiles&&window.FamProfiles.relang)window.FamProfiles.relang();
+}
+
 /* ---------- Navegación ---------- */
 var mode="learn", cleanup=null;
 function renderTabs(){
   $("#tabs").innerHTML=MODES.map(function(m){
-    return '<button class="tab" role="tab" type="button" data-m="'+m[0]+'" aria-selected="'+(m[0]===mode)+'">'+m[1]+'</button>';
+    return '<button class="tab" role="tab" type="button" data-m="'+m[0]+'" aria-selected="'+(m[0]===mode)+'">'+T(m[1])+'</button>';
   }).join("");
 }
 function renderLevels(){
   var inLearn=(mode==="learn");
   $("#levels").innerHTML=
-    (inLearn?'':'<small>Nivel</small>'+[1,2,3,4,5].map(function(i){
-      return '<button class="chip" type="button" data-l="'+i+'" aria-pressed="'+(S.level===i)+'">'+LV[i]+'</button>';
-    }).join("")+'<button class="chip" type="button" id="help" aria-pressed="'+(!!S.help)+'">Ver minutos</button>')+
-    '<small>Reloj</small>'+
+    (inLearn?'':'<small>'+T("Nivel")+'</small>'+[1,2,3,4,5].map(function(i){
+      return '<button class="chip" type="button" data-l="'+i+'" aria-pressed="'+(S.level===i)+'">'+T(LV[i])+'</button>';
+    }).join("")+'<button class="chip" type="button" id="help" aria-pressed="'+(!!S.help)+'">'+T("Ver minutos")+'</button>')+
+    '<small>'+T("Reloj")+'</small>'+
     '<button class="chip" type="button" data-f="12" aria-pressed="'+(S.fmt==="12")+'">12 h</button>'+
-    '<button class="chip" type="button" data-f="24" aria-pressed="'+(S.fmt==="24")+'">24 h</button>';
+    '<button class="chip" type="button" data-f="24" aria-pressed="'+(S.fmt==="24")+'">24 h</button>'+
+    '<small>'+T("Idioma")+'</small>'+
+    '<button class="chip" type="button" data-g="es" aria-pressed="'+(S.lang==="es")+'">ES</button>'+
+    '<button class="chip" type="button" data-g="en" aria-pressed="'+(S.lang==="en")+'">EN</button>';
 }
 function applyHelp(){document.body.classList.toggle("help",!!S.help)}
 function go(m){
@@ -469,6 +559,7 @@ $("#tabs").addEventListener("click",function(e){
 });
 $("#levels").addEventListener("click",function(e){
   var c=e.target.closest(".chip"); if(!c)return;
+  if(c.dataset.g){S.lang=c.dataset.g;save();applyLang();go(mode);return}
   if(c.dataset.f){S.fmt=c.dataset.f;save();renderLevels();go(mode);return}
   if(c.id==="help"){S.help=!S.help;save();applyHelp();renderLevels();return}
   S.level=Number(c.dataset.l); save(); renderLevels(); go(mode);
@@ -479,49 +570,42 @@ $("#snd").addEventListener("click",function(){
 function sndLabel(){
   var b=$("#snd");
   b.innerHTML=MUTE?SVG_MUTE:SVG_SND;
-  b.setAttribute("aria-label",MUTE?"Activar sonido":"Silenciar");
+  b.setAttribute("aria-label",MUTE?T("Activar sonido"):T("Silenciar"));
 }
 
 /* ---------- Aprende ---------- */
 function learn(){
+  var L=S.lang==="en"?"en":"es";
   var conv=[0,12,13,14,15,16,17,18,19,20,21,22,23].map(function(h){return '<div><b>'+h+'</b> = '+(h%12||12)+'</div>'}).join("");
   var minis=[900,915,930,945].map(function(t){
     return '<div class="mini">'+faceSVG({total:t})+'<b>'+fmt(t)+'</b><span>'+phrase(t)+'</span></div>';
   }).join("");
+  var per=PERIODS[L].map(function(p){return '<div class="per"><b>'+p[0]+'</b><span>'+p[1]+'</span></div>'}).join("");
   view.innerHTML=
   '<div class="card">'+
-    '<div class="legend"><span><i class="dot" style="background:var(--hour)"></i>Aguja corta: <b>horas</b></span><span><i class="dot" style="background:var(--minute)"></i>Aguja larga: <b>minutos</b></span></div>'+
+    '<div class="legend"><span><i class="dot" style="background:var(--hour)"></i>'+T("Aguja corta")+': <b>'+T("horas")+'</b></span><span><i class="dot" style="background:var(--minute)"></i>'+T("Aguja larga")+': <b>'+T("minutos")+'</b></span></div>'+
     '<div class="clock-wrap" id="host"></div>'+
     '<div class="lcd" id="dig"></div>'+
     '<div class="phrase" id="phr" aria-live="polite"></div>'+
     '<div class="period" id="per"></div>'+
-    '<div class="row"><button class="btn alt sm" type="button" id="am" aria-pressed="false">Antes del mediodía</button><button class="btn alt sm" type="button" id="pm" aria-pressed="true">Después del mediodía</button></div>'+
+    '<div class="row"><button class="btn alt sm" type="button" id="am" aria-pressed="false">'+T("Antes del mediodía")+'</button><button class="btn alt sm" type="button" id="pm" aria-pressed="true">'+T("Después del mediodía")+'</button></div>'+
     '<div class="row">'+
-      '<button class="btn alt" type="button" data-m="0">En punto</button>'+
-      '<button class="btn alt" type="button" data-m="15">Y cuarto</button>'+
-      '<button class="btn alt" type="button" data-m="30">Y media</button>'+
-      '<button class="btn alt" type="button" data-m="45">Menos cuarto</button>'+
+      '<button class="btn alt" type="button" data-m="0">'+T("En punto")+'</button>'+
+      '<button class="btn alt" type="button" data-m="15">'+T("Y cuarto")+'</button>'+
+      '<button class="btn alt" type="button" data-m="30">'+T("Y media")+'</button>'+
+      '<button class="btn alt" type="button" data-m="45">'+T("Menos cuarto")+'</button>'+
     '</div>'+
     '<div class="row">'+
-      '<button class="btn" type="button" id="sp">Escuchar</button>'+
-      '<label class="check"><input type="checkbox" id="mins"> Ver minutos</label>'+
+      '<button class="btn" type="button" id="sp">'+T("Escuchar")+'</button>'+
+      '<label class="check"><input type="checkbox" id="mins"> '+T("Ver minutos")+'</label>'+
     '</div>'+
-    '<p class="hint">Arrastra la punta de la aguja azul y mira cómo cambia la hora.</p>'+
+    '<p class="hint">'+T("Arrastra la punta de la aguja azul y mira cómo cambia la hora.")+'</p>'+
   '</div>'+
-  '<div class="card"><h2>Los cuartos, con las 3</h2><div class="minis">'+minis+'</div></div>'+
-  '<div class="card"><h2>Cómo se lee</h2><ul class="rules">'+
-    '<li>Cada número del reloj vale <b>5 minutos</b>: el 1 son 5, el 2 son 10, el 3 son 15…</li>'+
-    '<li>Hasta la media hora decimos <b>«y»</b>: las tres <b>y</b> diez.</li>'+
-    '<li>Pasada la media hora decimos <b>«menos»</b> y la hora siguiente: las cuatro <b>menos</b> diez.</li>'+
-    '<li>El 3 es <b>y cuarto</b>, el 6 es <b>y media</b> y el 9 es <b>menos cuarto</b>.</li>'+
-  '</ul></div>'+
-  '<div class="card"><h2>El día tiene 24 horas</h2>'+
-    '<div class="periods">'+
-      '<div class="per"><b>Mañana</b><span>de 6:00 a 11:59</span></div>'+
-      '<div class="per"><b>Tarde</b><span>de 12:00 a 19:59</span></div>'+
-      '<div class="per"><b>Noche</b><span>de 20:00 a 5:59</span></div>'+
-    '</div>'+
-    '<p class="hint" style="text-align:left">Después de las 12:00 el reloj de 24 horas sigue contando: 13, 14, 15… Para saber la hora del reloj de agujas, <b>resta 12</b>: las 15:00 son las 3 de la tarde.</p>'+
+  '<div class="card"><h2>'+T("Los cuartos, con las 3")+'</h2><div class="minis">'+minis+'</div></div>'+
+  '<div class="card"><h2>'+T("Cómo se lee")+'</h2><ul class="rules">'+RULES[L].join("")+'</ul></div>'+
+  '<div class="card"><h2>'+T("El día tiene 24 horas")+'</h2>'+
+    '<div class="periods" style="grid-template-columns:repeat(auto-fit,minmax(105px,1fr))">'+per+'</div>'+
+    '<p class="hint" style="text-align:left">'+DAYTXT[L]+'</p>'+
     '<div class="conv">'+conv+'</div>'+
   '</div>';
   var host=$("#host"), api, half=1;
@@ -532,7 +616,7 @@ function learn(){
     var pr=period(D); $("#per").textContent=pr.label;
     $("#am").setAttribute("aria-pressed",String(half===0));
     $("#pm").setAttribute("aria-pressed",String(half===1));
-    var sv=$("svg",host); if(sv)sv.setAttribute("aria-label","Reloj: "+phrase(D));
+    var sv=$("svg",host); if(sv)sv.setAttribute("aria-label",T("Reloj")+": "+phrase(D));
   }
   $("#am").onclick=function(){half=0;upd(api.total)};
   $("#pm").onclick=function(){half=1;upd(api.total)};
@@ -565,8 +649,8 @@ function quiz(timed){
   var card=view.firstElementChild;
   cleanup=function(){clearInterval(timer);clearTimeout(to)};
   function hud(){
-    $("#s1").textContent=timed?"⏱️ "+left+" s":"Pregunta "+Math.min(n+1,N)+" de "+N;
-    $("#s2").textContent="Aciertos "+ok;
+    $("#s1").textContent=timed?"⏱️ "+left+" s":T("Pregunta {a} de {b}",{a:Math.min(n+1,N),b:N});
+    $("#s2").textContent=T("Aciertos {a}",{a:ok});
     $("#pg").style.width=((timed?left/60:n/N)*100)+"%";
   }
   function next(){
@@ -591,12 +675,12 @@ function quiz(timed){
     $("#phr").textContent=phrase(cur);
     if(good){
       ok++; S.stars++; b.classList.add("ok"); beep([660,880]);
-      $("#msg").textContent=pick(["¡Correcto!","¡Muy bien!","¡Eso es!","¡Genial!"]);
+      $("#msg").textContent=pick([T("¡Correcto!"),T("¡Muy bien!"),T("¡Eso es!"),T("¡Genial!")]);
     }else{
       b.classList.add("bad");
       Array.prototype.forEach.call($("#opts").children,function(x){if(Number(x.dataset.t)===cur)x.classList.add("ok")});
       beep([240,180]);
-      $("#msg").textContent="¡Casi! Mira la solución.";
+      $("#msg").textContent=T("¡Casi! Mira la solución.");
     }
     save(); hudStars(); hud();
     to=setTimeout(next,good?(timed?450:1300):(timed?900:2500));
@@ -607,14 +691,14 @@ function quiz(timed){
     if(timed&&ok>0&&ok>(S.best[k]||0)){S.best[k]=ok;isNew=true}
     save();
     var lvl=timed?(ok>=10?3:ok>=6?2:ok>=3?1:0):(ok>=9?3:ok>=7?2:ok>=4?1:0);
-    var r=[["","¡A seguir practicando!"],["","¡Vas bien!"],["","¡Muy bien!"],["","¡Increíble!"]][lvl];
+    var title=[T("¡A seguir practicando!"),T("¡Vas bien!"),T("¡Muy bien!"),T("¡Increíble!")][lvl];
     var canUp=ok>=8&&S.level<5;
     card.innerHTML=
-      '<div class="result"><h2>'+r[1]+'</h2>'+
-      '<p class="sum">'+(timed?ok+" correctas en 60 segundos":ok+" de "+N+" bien")+'. Has ganado '+ok+' ⭐</p>'+
-      (timed?'<p class="sum">Récord en el nivel '+S.level+': <b>'+(S.best[k]||0)+'</b>'+(isNew?' · ¡Nuevo récord!':'')+'</p>':'')+
-      '<div class="row"><button class="btn" type="button" id="again">Jugar otra vez</button>'+
-      (canUp?'<button class="btn alt" type="button" id="up">Subir al nivel '+(S.level+1)+'</button>':'')+'</div></div>';
+      '<div class="result"><h2>'+title+'</h2>'+
+      '<p class="sum">'+(timed?T("{a} correctas en 60 segundos",{a:ok}):T("{a} de {b} bien",{a:ok,b:N}))+'. '+T("Has ganado {a} ⭐",{a:ok})+'</p>'+
+      (timed?'<p class="sum">'+T("Récord en el nivel {a}:",{a:S.level})+' <b>'+(S.best[k]||0)+'</b>'+(isNew?' · '+T("¡Nuevo récord!"):'')+'</p>':'')+
+      '<div class="row"><button class="btn" type="button" id="again">'+T("Jugar otra vez")+'</button>'+
+      (canUp?'<button class="btn alt" type="button" id="up">'+T("Subir al nivel {a}",{a:S.level+1})+'</button>':'')+'</div></div>';
     $("#again").onclick=function(){quiz(timed)};
     var up=$("#up");
     if(up)up.onclick=function(){S.level++;save();renderLevels();go(mode)};
@@ -636,18 +720,18 @@ function setGame(){
   '<div class="card">'+
     '<div class="stat"><span id="s1"></span><span id="s2"></span></div>'+
     '<div class="progress"><i id="pg"></i></div>'+
-    '<div class="ask">Pon esta hora en el reloj</div>'+
+    '<div class="ask">'+T("Pon esta hora en el reloj")+'</div>'+
     '<div class="lcd" id="dig"></div>'+
     '<div class="phrase" id="phr"></div>'+
     '<div class="clock-wrap" id="host"></div>'+
-    '<div class="row"><button class="btn alt" type="button" id="hm">− 1 hora</button><button class="btn alt" type="button" id="hp">+ 1 hora</button></div>'+
-    '<div class="row"><button class="btn" type="button" id="go">Comprobar</button></div>'+
+    '<div class="row"><button class="btn alt" type="button" id="hm">'+T("− 1 hora")+'</button><button class="btn alt" type="button" id="hp">'+T("+ 1 hora")+'</button></div>'+
+    '<div class="row"><button class="btn" type="button" id="go">'+T("Comprobar")+'</button></div>'+
     '<div class="msg" id="msg" aria-live="polite"></div>'+
-    '<p class="hint">Arrastra la punta de la aguja azul. La roja la acompaña.</p>'+
+    '<p class="hint">'+T("Arrastra la punta de la aguja azul. La roja la acompaña.")+'</p>'+
   '</div>';
   var card=view.firstElementChild;
   function hud(){
-    $("#s1").textContent="Reto "+Math.min(n+1,N)+" de "+N;
+    $("#s1").textContent=T("Reto {a} de {b}",{a:Math.min(n+1,N),b:N});
     $("#s2").textContent="⭐ "+firstTry;
     $("#pg").style.width=((n+(state==="next"?1:0))/N*100)+"%";
   }
@@ -660,7 +744,7 @@ function setGame(){
     $("#dig").textContent=fmt(target);
     $("#phr").textContent=phrase(target);
     $("#msg").textContent="";
-    $("#go").textContent="Comprobar";
+    $("#go").textContent=T("Comprobar");
     $("#host").innerHTML=faceSVG({total:s,interactive:true});
     api=liveClock($("#host"),{total:s,snap:snap});
     hud();
@@ -669,7 +753,7 @@ function setGame(){
   $("#hp").onclick=function(){api.set(api.total+60)};
   function toNext(){
     state="next";
-    $("#go").textContent=(n===N-1)?"Ver resultado →":"Siguiente →";
+    $("#go").textContent=(n===N-1)?T("Ver resultado →"):T("Siguiente →");
     hud();
   }
   $("#go").onclick=function(){
@@ -678,29 +762,29 @@ function setGame(){
     if(api.total===target%720){
       if(fails===0){firstTry++;S.stars++;save();hudStars()}
       beep([660,880]);
-      $("#msg").textContent=fails===0?"¡Perfecto!":"¡Bien! Lo has conseguido.";
+      $("#msg").textContent=fails===0?T("¡Perfecto!"):T("¡Bien! Lo has conseguido.");
       toNext();
     }else{
       fails++; beep([240,180]);
       if(fails>=2){
         api.set(target);
-        $("#msg").textContent="Así se pone: "+phrase(target)+".";
+        $("#msg").textContent=T("Así se pone: {a}.",{a:phrase(target)});
         toNext();
       }else{
         var sameHour=Math.floor(api.total/60)===Math.floor((target%720)/60);
-        $("#msg").textContent=sameHour?"La hora está bien, pero revisa los minutos (aguja azul).":"Ahora marca "+clockStr(api.total)+". ¡Inténtalo otra vez!";
+        $("#msg").textContent=sameHour?T("La hora está bien, pero revisa los minutos (aguja azul)."):T("Ahora marca {a}. ¡Inténtalo otra vez!",{a:clockStr(api.total)});
       }
     }
   };
   function finish(){
     done=true;
     var lvl=firstTry>=7?3:firstTry>=5?2:firstTry>=3?1:0;
-    var r=[["","¡A seguir practicando!"],["","¡Vas bien!"],["","¡Muy bien!"],["","¡Increíble!"]][lvl];
+    var title=[T("¡A seguir practicando!"),T("¡Vas bien!"),T("¡Muy bien!"),T("¡Increíble!")][lvl];
     card.innerHTML=
-      '<div class="result"><h2>'+r[1]+'</h2>'+
-      '<p class="sum">'+firstTry+' de '+N+' a la primera. Has ganado '+firstTry+' ⭐</p>'+
-      '<div class="row"><button class="btn" type="button" id="again">Jugar otra vez</button>'+
-      (firstTry>=6&&S.level<5?'<button class="btn alt" type="button" id="up">Subir al nivel '+(S.level+1)+'</button>':'')+'</div></div>';
+      '<div class="result"><h2>'+title+'</h2>'+
+      '<p class="sum">'+T("{a} de {b} a la primera. Has ganado {a} ⭐",{a:firstTry,b:N})+'</p>'+
+      '<div class="row"><button class="btn" type="button" id="again">'+T("Jugar otra vez")+'</button>'+
+      (firstTry>=6&&S.level<5?'<button class="btn alt" type="button" id="up">'+T("Subir al nivel {a}",{a:S.level+1})+'</button>':'')+'</div></div>';
     $("#again").onclick=setGame;
     var up=$("#up");
     if(up)up.onclick=function(){S.level++;save();renderLevels();go(mode)};
@@ -718,10 +802,10 @@ function memory(){
   cards=shuffle(cards);
   view.innerHTML=
   '<div class="card">'+
-    '<div class="stat"><span id="s1">Intentos: 0</span><span id="s2">Parejas: 0 de 6</span></div>'+
-    '<p class="hint" style="margin:0 0 8px">Une cada reloj con su hora.</p>'+
+    '<div class="stat"><span id="s1">'+T("Intentos: {a}",{a:0})+'</span><span id="s2">'+T("Parejas: {a} de 6",{a:0})+'</span></div>'+
+    '<p class="hint" style="margin:0 0 8px">'+T("Une cada reloj con su hora.")+'</p>'+
     '<div class="mem" id="grid">'+cards.map(function(c){
-      return '<button class="mcard" type="button" data-t="'+c.t+'" aria-label="Carta"><span class="in"><span class="mback">?</span><span class="mfront">'+(c.k==="c"?faceSVG({total:c.t}):'<b>'+fmt(c.t)+'</b><small>'+period(c.t).icon+'</small>')+'</span></span></button>';
+      return '<button class="mcard" type="button" data-t="'+c.t+'" aria-label="'+T("Carta")+'"><span class="in"><span class="mback">?</span><span class="mfront">'+(c.k==="c"?faceSVG({total:c.t}):'<b>'+fmt(c.t)+'</b><small>'+period(c.t).icon+'</small>')+'</span></span></button>';
     }).join("")+'</div>'+
     '<div class="result" id="res" hidden></div>'+
   '</div>';
@@ -734,11 +818,11 @@ function memory(){
     if(!first){first=c;return}
     moves++;
     var a=first, b=c; first=null;
-    $("#s1").textContent="Intentos: "+moves;
+    $("#s1").textContent=T("Intentos: {a}",{a:moves});
     if(a.dataset.t===b.dataset.t){
       a.classList.add("done"); b.classList.add("done"); pairs++;
       beep([660,880]);
-      $("#s2").textContent="Parejas: "+pairs+" de 6";
+      $("#s2").textContent=T("Parejas: {a} de 6",{a:pairs});
       if(pairs===6)win();
     }else{
       lock=true; beep([240]);
@@ -754,10 +838,10 @@ function memory(){
     var res=$("#res");
     res.hidden=false;
     res.innerHTML=
-      '<h2>¡Todas las parejas!</h2>'+
-      '<p class="sum">'+moves+' intentos. Has ganado '+st+' ⭐</p>'+
-      '<p class="sum">Mejor marca en el nivel '+S.level+': <b>'+S.best[k]+'</b>'+(isNew?' · ¡Nueva!':'')+'</p>'+
-      '<div class="row"><button class="btn" type="button" id="again">Jugar otra vez</button></div>';
+      '<h2>'+T("¡Todas las parejas!")+'</h2>'+
+      '<p class="sum">'+T("{a} intentos. Has ganado {b} ⭐",{a:moves,b:st})+'</p>'+
+      '<p class="sum">'+T("Mejor marca en el nivel {a}:",{a:S.level})+' <b>'+S.best[k]+'</b>'+(isNew?' · '+T("¡Nueva!"):'')+'</p>'+
+      '<div class="row"><button class="btn" type="button" id="again">'+T("Jugar otra vez")+'</button></div>';
     $("#again").onclick=memory;
     confetti();
   }
@@ -768,23 +852,23 @@ function applyTheme(t){
   if(t==="auto")document.documentElement.removeAttribute("data-theme");
   else document.documentElement.setAttribute("data-theme",t);
   try{localStorage.setItem("dash:theme",t)}catch(e){}
-  var b=$("#themeBtn"); b.textContent=t==="dark"?"☾":t==="light"?"☀":"◐"; b.title="Tema: "+t;
+  var b=$("#themeBtn"); b.textContent=t==="dark"?"☾":t==="light"?"☀":"◐"; b.title=T("Tema")+": "+t;
 }
 $("#themeBtn").onclick=function(){
   var cur="auto"; try{cur=localStorage.getItem("dash:theme")||"auto"}catch(e){}
   applyTheme({auto:"light",light:"dark",dark:"auto"}[cur]||"auto");
 };
 (function(){var t="auto";try{t=localStorage.getItem("dash:theme")||"auto"}catch(e){}applyTheme(t)})();
-hudStars(); sndLabel(); applyHelp(); renderTabs(); renderLevels();
+hudStars(); applyLang(); applyHelp(); renderTabs(); renderLevels();
 if(window.FamProfiles){
   window.FamProfiles.init({
     app:"reloj",
-    lang:function(){return "es"},
+    lang:function(){return S.lang==="en"?"en":"es"},
     defaults:function(){return norm({})},
     normalize:norm,
     merge:mergeData,
-    onLoad:function(d){S=d;hudStars();applyHelp();go("learn");window.scrollTo(0,0)},
-    onData:function(d){S=d;hudStars()}
+    onLoad:function(d){S=d;hudStars();applyLang();applyHelp();go("learn");window.scrollTo(0,0)},
+    onData:function(d){S=d;hudStars();applyLang()}
   });
   $("#slot").appendChild(window.FamProfiles.chip());
   $("#sync").appendChild(window.FamProfiles.syncEl());
